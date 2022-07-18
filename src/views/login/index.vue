@@ -3,10 +3,10 @@
     <div class="view-account-header"></div>
     <div class="view-account-container">
       <div class="view-account-top">
-        <div class="view-account-top-logo">
-          <img src="~@/assets/images/account-logo.png" alt="" />
-        </div>
-        <div class="view-account-top-desc">Naive Ui Admin中台前端/设计解决方案</div>
+        <span class="view-account-top-logo">
+          <img src="~@/assets/images/logo_s.png" alt="" />
+        </span>
+        <span class="view-account-top-desc">科研管理系统</span>
       </div>
       <div class="view-account-form">
         <n-form
@@ -164,7 +164,7 @@
 
     &-container {
       flex: 1;
-      padding: 32px 12px;
+      padding: 10% 12px;
       max-width: 384px;
       min-width: 320px;
       margin: 0 auto;
@@ -173,10 +173,13 @@
     &-top {
       padding: 32px 0;
       text-align: center;
+      display: flex;
 
       &-desc {
-        font-size: 14px;
-        color: #808695;
+        padding: 10px 30px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #28333e;
       }
     }
 
