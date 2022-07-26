@@ -61,14 +61,15 @@ export const useUserStore = defineStore({
     async login(userInfo) {
       try {
         const response = await login(userInfo);
-        const { result, code } = response;
+        const { list, code } = response;
         if (code === ResultEnum.SUCCESS) {
           const ex = 7 * 24 * 60 * 60 * 1000;
-          storage.set(ACCESS_TOKEN, result.token, ex);
-          storage.set(CURRENT_USER, result, ex);
+
+          storage.set(ACCESS_TOKEN, list.lastdoc, ex);
+          storage.set(CURRENT_USER, list, ex);
           storage.set(IS_LOCKSCREEN, false);
-          this.setToken(result.token);
-          this.setUserInfo(result);
+          this.setToken(list.lastdoc);
+          this.setUserInfo(list);
         }
         return Promise.resolve(response);
       } catch (e) {
@@ -80,17 +81,26 @@ export const useUserStore = defineStore({
     GetInfo() {
       const that = this;
       return new Promise((resolve, reject) => {
-        getUserInfo()
+        const params = { doctorid: that.token };
+        const formData = new window.FormData();
+        for (const key in params) {
+          if (Object.prototype.hasOwnProperty.call(params, key)) {
+            const element = params[key];
+            formData.append(key, element);
+          }
+        }
+        getUserInfo(formData)
           .then((res) => {
-            const result = res;
-            if (result.permissions && result.permissions.length) {
-              const permissionsList = result.permissions;
+            const { list } = res;
+            // debugger;
+            if (list.groupid) {
+              const permissionsList = list.groupid.split(',');
               that.setPermissions(permissionsList);
-              that.setUserInfo(result);
+              that.setUserInfo(list);
             } else {
               reject(new Error('getInfo: permissionsList must be a non-null array !'));
             }
-            that.setAvatar(result.avatar);
+            // that.setAvatar(result.avatar);
             resolve(res);
           })
           .catch((error) => {

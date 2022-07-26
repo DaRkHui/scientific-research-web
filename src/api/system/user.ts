@@ -2,8 +2,8 @@ import { http } from '@/utils/http/axios';
 
 export interface BasicResponseModel<T = any> {
   code: number;
-  message: string;
-  result: T;
+  info: string;
+  list: T;
 }
 
 export interface BasicPageParams {
@@ -15,11 +15,17 @@ export interface BasicPageParams {
 /**
  * @description: 获取用户信息
  */
-export function getUserInfo() {
-  return http.request({
-    url: '/admin_info',
-    method: 'get',
-  });
+export function getUserInfo(params) {
+  return http.request(
+    {
+      url: '/user/setdoctype',
+      method: 'POST',
+      params,
+    },
+    {
+      isTransformResponse: false,
+    }
+  );
 }
 
 /**
@@ -28,7 +34,7 @@ export function getUserInfo() {
 export function login(params) {
   return http.request<BasicResponseModel>(
     {
-      url: '/login',
+      url: '/user/userlogin',
       method: 'POST',
       params,
     },

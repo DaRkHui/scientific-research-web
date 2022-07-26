@@ -21,7 +21,8 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/system/menu',
     component: Layout,
     meta: {
-      title: '系统设置',
+      id: '37000001',
+      title: '人员管理',
       icon: renderIcon(OptionsSharp),
       sort: 1,
     },
@@ -38,9 +39,19 @@ const routes: Array<RouteRecordRaw> = [
         path: 'role',
         name: 'system_role',
         meta: {
-          title: '角色权限管理',
+          id: '307000002',
+          title: '角色权限',
         },
         component: () => import('@/views/system/role/role.vue'),
+      },
+      {
+        path: 'number',
+        name: 'system_number',
+        meta: {
+          id: '307000001',
+          title: '人员管理',
+        },
+        component: () => import('@/views/system/basicList/index.vue'),
       },
     ],
   },

@@ -4,7 +4,7 @@
     <div class="view-account-container">
       <div class="view-account-top">
         <span class="view-account-top-logo">
-          <img src="~@/assets/images/logo_s.png" alt="" />
+          <img src="~@/assets/images/logo.png" alt="" />
         </span>
         <span class="view-account-top-desc">科研管理系统</span>
       </div>
@@ -17,7 +17,7 @@
           :rules="rules"
         >
           <n-form-item path="username">
-            <n-input v-model:value="formInline.username" placeholder="请输入用户名">
+            <n-input v-model:value="formInline.mobile" placeholder="请输入用户名">
               <template #prefix>
                 <n-icon size="18" color="#808695">
                   <PersonOutline />
@@ -56,7 +56,7 @@
           </n-form-item>
           <n-form-item class="default-color">
             <div class="flex view-account-other">
-              <div class="flex-initial">
+              <!-- <div class="flex-initial">
                 <span>其它登录方式</span>
               </div>
               <div class="flex-initial mx-2">
@@ -72,7 +72,7 @@
                     <LogoFacebook />
                   </n-icon>
                 </a>
-              </div>
+              </div> -->
               <div class="flex-initial" style="margin-left: auto">
                 <a href="javascript:">注册账号</a>
               </div>
@@ -92,9 +92,9 @@
   import { ResultEnum } from '@/enums/httpEnum';
   import { PersonOutline, LockClosedOutline, LogoGithub, LogoFacebook } from '@vicons/ionicons5';
   import { PageEnum } from '@/enums/pageEnum';
-
+  import qs from 'qs';
   interface FormState {
-    username: string;
+    mobile: string;
     password: string;
   }
 
@@ -105,13 +105,13 @@
   const LOGIN_NAME = PageEnum.BASE_LOGIN_NAME;
 
   const formInline = reactive({
-    username: 'admin',
-    password: '123456',
+    mobile: '18770601462',
+    password: '2',
     isCaptcha: true,
   });
 
   const rules = {
-    username: { required: true, message: '请输入用户名', trigger: 'blur' },
+    mobile: { required: true, message: '请输入用户名', trigger: 'blur' },
     password: { required: true, message: '请输入密码', trigger: 'blur' },
   };
 
@@ -124,21 +124,30 @@
     e.preventDefault();
     formRef.value.validate(async (errors) => {
       if (!errors) {
-        const { username, password } = formInline;
+        const { mobile, password } = formInline;
         message.loading('登录中...');
         loading.value = true;
 
         const params: FormState = {
-          username,
+          mobile,
           password,
         };
 
         try {
-          const { code, message: msg } = await userStore.login(params);
+          let formData = new window.FormData();
+          for (const key in params) {
+            if (Object.prototype.hasOwnProperty.call(params, key)) {
+              const element = params[key];
+              formData.append(key, element);
+            }
+          }
+
+          const { code, info: msg } = await userStore.login(formData);
           message.destroyAll();
           if (code == ResultEnum.SUCCESS) {
             const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
             message.success('登录成功，即将进入系统');
+            // debugger
             if (route.name === LOGIN_NAME) {
               router.replace('/');
             } else router.replace(toPath);

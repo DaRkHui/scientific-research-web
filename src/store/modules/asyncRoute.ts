@@ -88,12 +88,19 @@ export const useAsyncRouteStore = defineStore({
     },
     async generateRoutes(data) {
       let accessedRouters;
-      const permissionsList = data.permissions || [];
+      // const permissionsList = data.permissions || [];
+      // const routeFilter = (route) => {
+      const permissionsList = data.list.groupid.split(',') || [];
       const routeFilter = (route) => {
         const { meta } = route;
-        const { permissions } = meta || {};
-        if (!permissions) return true;
-        return permissionsList.some((item) => permissions.includes(item.value));
+        const { id } = meta || {};
+        if (!id) return true;
+
+        return permissionsList.some((item) => id === item);
+        // const { meta } = route;
+        // const { permissions } = meta || {};
+        // if (!permissions) return true;
+        // return permissionsList.some((item) => permissions.includes(item.value));
       };
       const { getPermissionMode } = useProjectSetting();
       const permissionMode = unref(getPermissionMode);
@@ -113,6 +120,8 @@ export const useAsyncRouteStore = defineStore({
         }
       }
       accessedRouters = accessedRouters.filter(routeFilter);
+      console.log('accessedRouters', accessedRouters);
+
       this.setRouters(accessedRouters);
       this.setMenus(accessedRouters);
       return toRaw(accessedRouters);
