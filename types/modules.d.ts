@@ -1,4 +1,4 @@
-declare module '*.vue' {
+declare module project'*.vue' {
   import { DefineComponent } from 'vue';
   const Component: DefineComponent<{}, {}, any>;
   export default Component;
