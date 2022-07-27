@@ -4,7 +4,7 @@ import { AxiosTransform } from './axiosTransform';
 import axios, { AxiosResponse } from 'axios';
 import { checkStatus } from './checkStatus';
 import { joinTimestamp, formatRequestDate } from './helper';
-import { RequestEnum, ResultEnum, ContentTypeEnum } from '@/enums/httpEnum';
+import { RequestEnum, BaseResultEnum, ContentTypeEnum } from '@/enums/httpEnum';
 import { PageEnum } from '@/enums/pageEnum';
 
 import { useGlobSetting } from '@/hooks/setting';
@@ -13,7 +13,7 @@ import { isString } from '@/utils/is/';
 import { deepMerge, isUrl } from '@/utils';
 import { setObjToUrlParams } from '@/utils/urlUtils';
 
-import { RequestOptions, Result, CreateAxiosOptions } from './types';
+import { RequestOptions, BaseResult, CreateAxiosOptions } from './types';
 
 import { useUserStoreWidthOut } from '@/store/modules/user';
 
@@ -30,7 +30,7 @@ const transform: AxiosTransform = {
   /**
    * @description: 处理请求数据
    */
-  transformRequestData: (res: AxiosResponse<Result>, options: RequestOptions) => {
+  basetransformRequestData: (res: AxiosResponse<BaseResult>, options: RequestOptions) => {
     const {
       isShowMessage = true,
       isShowErrorMessage,
@@ -40,7 +40,7 @@ const transform: AxiosTransform = {
       isTransformResponse,
       isReturnNativeResponse,
     } = options;
-
+    // debugger;
     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
     if (isReturnNativeResponse) {
       return res;
@@ -51,36 +51,36 @@ const transform: AxiosTransform = {
       return res.data;
     }
 
-    const { data } = res;
+    const baseData = res.data;
 
     const $dialog = window['$dialog'];
     const $message = window['$message'];
 
-    if (!data) {
+    if (!baseData) {
       // return '[HTTP] Request has no return value';
       throw new Error('请求出错，请稍候重试');
     }
     //  这里 code，result，message为 后台统一的字段，需要修改为项目自己的接口返回格式
-    const { code, list, info } = data;
+    const { code, data, msg } = baseData;
     // 请求成功
-    // debugger
-    const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
+    
+    const hasSuccess = data && Reflect.has(data, 'code') && code === BaseResultEnum.SUCCESS;
     // 是否显示提示信息
     if (isShowMessage) {
       if (hasSuccess && (successMessageText || isShowSuccessMessage)) {
         // 是否显示自定义信息提示
         $dialog.success({
           type: 'success',
-          content: successMessageText || info || '操作成功！',
+          content: successMessageText || msg || '操作成功！',
         });
       } else if (!hasSuccess && (errorMessageText || isShowErrorMessage)) {
         // 是否显示自定义信息提示
-        $message.error(info || errorMessageText || '操作失败！');
+        $message.error(msg || errorMessageText || '操作失败！');
       } else if (!hasSuccess && options.errorMessageMode === 'modal') {
         // errorMessageMode=‘custom-modal’的时候会显示modal错误弹窗，而不是消息提示，用于一些比较重要的错误
         $dialog.info({
           title: '提示',
-          content: info,
+          content: msg,
           positiveText: '确定',
           onPositiveClick: () => { },
         });
@@ -88,18 +88,19 @@ const transform: AxiosTransform = {
     }
 
     // 接口请求成功，直接返回结果
-    if (code === ResultEnum.SUCCESS) {
-      return list;
+    if (code === BaseResultEnum.SUCCESS) {
+      console.log(data);
+      return data;
     }
     // 接口请求错误，统一提示错误信息 这里逻辑可以根据项目进行修改
-    let errorMsg = info;
+    let errorMsg = msg;
     switch (code) {
       // 请求失败
-      case ResultEnum.ERROR:
+      case BaseResultEnum.ERROR:
         $message.error(errorMsg);
         break;
       // 登录超时
-      case ResultEnum.TIMEOUT:
+      case BaseResultEnum.TIMEOUT:
         const LoginName = PageEnum.BASE_LOGIN_NAME;
         const LoginPath = PageEnum.BASE_LOGIN;
         if (router.currentRoute.value?.name === LoginName) return;
@@ -252,7 +253,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           // 是否返回原生响应头 比如：需要获取响应头时使用该属性
           isReturnNativeResponse: false,
           // 需要对返回数据进行处理
-          isTransformResponse: true,
+          isTransformResponse: false,
           // post请求的时候添加参数到url
           joinParamsToUrl: false,
           // 格式化提交参数时间
@@ -260,7 +261,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           // 消息提示类型
           errorMessageMode: 'none',
           // 接口地址
-          apiUrl: globSetting.apiUrl,
+          apiUrl: globSetting.baseUrl,
           // 接口拼接地址
           urlPrefix: urlPrefix,
           //  是否加入时间戳
@@ -282,9 +283,9 @@ export const http = createAxios();
 // 项目，多个不同 api 地址，直接在这里导出多个
 // src/api ts 里面接口，就可以单独使用这个请求，
 // import { httpTwo } from '@/utils/http/axios'
-export const httpTwo = createAxios({
-  requestOptions: {
-    apiUrl: globSetting.baseUrl,
-    urlPrefix: urlPrefix,
-  },
-});
+// export const httpTwo = createAxios({
+//   requestOptions: {
+//     apiUrl: globSetting.baseUrl,
+//     urlPrefix: urlPrefix,
+//   },
+// });

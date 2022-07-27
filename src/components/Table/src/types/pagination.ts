@@ -1,7 +1,7 @@
 export interface PaginationProps {
   page?: number;
-  pageCount?: number;
-  pageSize?: number;
+  total?: number;
+  rows?: number;
   pageSizes?: number[];
   showSizePicker?: boolean;
   showQuickJumper?: boolean;

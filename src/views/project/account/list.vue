@@ -1,28 +1,42 @@
 <template>
-  <n-card :bordered="false" class="proCard">
-    <BasicForm @register="register" @submit="handleSubmit" @reset="handleReset">
+  <n-card :bordered="false" class="proCard pmp">
+    <template #header>
+      <span class="all"> 全部（2）</span>
+      <span class="search"
+        ><n-button text size="large" @click="showSearchBar">
+          <template #icon>
+            <n-icon>
+              <SearchOutlined />
+            </n-icon>
+          </template>
+          搜索
+        </n-button>
+      </span>
+    </template>
+    <BasicForm v-if="showSearch" @register="register" @submit="handleSubmit" @reset="handleReset">
       <template #statusSlot="{ model, field }">
         <n-input v-model:value="model[field]" />
       </template>
     </BasicForm>
-
+    <n-divider />
     <BasicTable
+      :bordered="false"
       :columns="columns"
       :request="loadDataTable"
-      :row-key="(row) => row.id"
+      :row-key="(row) => row.id_num"
       ref="actionRef"
       :actionColumn="actionColumn"
       @update:checked-row-keys="onCheckedRow"
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <n-button type="primary" @click="addTable">
+        <n-button type="primary" size="large" @click="addTable">
           <template #icon>
             <n-icon>
               <PlusOutlined />
             </n-icon>
           </template>
-          新建
+          新增申报计划
         </n-button>
       </template>
 
@@ -66,9 +80,11 @@
   import { useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList } from '@/api/table/list';
+  import { getTableList } from '@/api/project/list';
   import { columns } from './columns';
-  import { PlusOutlined } from '@vicons/antd';
+  import { PlusOutlined, SearchOutlined } from '@vicons/antd';
+  // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
+
   import { useRouter } from 'vue-router';
 
   const rules = {
@@ -220,16 +236,18 @@
   const actionRef = ref();
 
   const showModal = ref(false);
+  const showSearch = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    name: '',
-    address: '',
-    date: null,
+    saveStatus: '',
+    keyword: '',
+    type: '',
   });
 
   const params = ref({
-    pageSize: 5,
-    name: 'xiaoMa',
+    page: 1,
+    rows: 20,
+    // name: 'xiaoMa',
   });
 
   const actionColumn = reactive({
@@ -294,8 +312,15 @@
   function addTable() {
     showModal.value = true;
   }
+  function showSearchBar() {
+    showSearch.value = !showSearch.value;
+  }
 
   const loadDataTable = async (res) => {
+    // await getTableList({ ...formParams, ...params.value, ...res }).then((ret) => {
+    //   console.log(ret.data.data.result);
+    //   return ret.data.data;
+    // });
     return await getTableList({ ...formParams, ...params.value, ...res });
   };
 
@@ -344,4 +369,20 @@
   }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .pmp {
+    ::v-deep(.n-card-header) {
+      padding: 0;
+    }
+    .all {
+      font-size: 16px;
+      color: #2d8cf0;
+      border-bottom: 2px solid;
+      line-height: 20px;
+      padding-bottom: 10px;
+    }
+    .search {
+      margin: 8px;
+    }
+  }
+</style>

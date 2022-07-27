@@ -1,8 +1,9 @@
 <template>
   <div>
     <n-grid :x-gap="24">
-      <n-grid-item span="6">
+      <n-grid-item span="3">
         <n-card :bordered="false" size="small" class="proCard">
+          <span class="proCard-title">项目申报（）</span>
           <n-thing
             class="thing-cell"
             v-for="item in typeTabList"
@@ -11,10 +12,10 @@
             @click="switchType(item)"
           >
             <template #header>{{ item.name }}</template>
-            <template #description>{{ item.desc }}</template>
+            <!-- <template #description>{{ item.desc }}</template> -->
           </n-thing>
         </n-card>
-        <n-card :bordered="false" size="small" class="proCard">
+        <n-card :bordered="false" size="small" class="proCard" style="margin-top: 30px">
           <n-thing
             class="thing-cell"
             v-for="item in throwTabList"
@@ -23,12 +24,13 @@
             @click="switchType(item)"
           >
             <template #header>{{ item.name }}</template>
-            <template #description>{{ item.desc }}</template>
+            <!-- <template #description>{{ item.desc }}</template> -->
           </n-thing>
         </n-card>
       </n-grid-item>
-      <n-grid-item span="18">
-        <n-card :bordered="false" size="small" :title="typeTitle" class="proCard">
+      <n-grid-item span="21">
+        <n-card :bordered="false" size="small" class="proCard">
+        
           <List v-if="type === 1" />
           <SafetySetting v-if="type === 2" />
         </n-card>
@@ -45,20 +47,20 @@
   const typeTabList = [
     {
       name: '已发布',
-      desc: '个人账户信息设置',
+      // desc: '个人账户信息设置',
       key: 1,
     },
     {
       name: '已关闭',
-      desc: '密码，邮箱等设置',
+      // desc: '密码，邮箱等设置',
       key: 2,
     },
   ];
   const throwTabList = [
     {
       name: '我的草稿',
-      desc: '个人账户信息设置',
-      key: 1,
+      // desc: '个人账户信息设置',
+      key: 3,
     },
   ];
 
@@ -67,13 +69,20 @@
 
   function switchType(e) {
     type.value = e.key;
-    typeTitle.value = e.name;
+    // typeTitle.value = e.name;
   }
 </script>
 <style lang="less" scoped>
+  .proCard-title {
+    display: block;
+    font-weight: bold;
+    font-size: 22px;
+    color: #4f586f;
+    margin-bottom: 10px;
+  }
   .thing-cell {
-    margin: 0 -16px 10px;
-    padding: 5px 16px;
+    // margin: 0 -16px 10px;
+    padding: 12px 28px 10px;
 
     &:hover {
       background: #f3f3f3;
@@ -84,6 +93,7 @@
   .thing-cell-on {
     background: #f0faff;
     color: #2d8cf0;
+    border-left: 2px solid;
 
     ::v-deep(.n-thing-main .n-thing-header .n-thing-header__title) {
       color: #2d8cf0;

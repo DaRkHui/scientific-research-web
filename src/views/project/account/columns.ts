@@ -3,28 +3,35 @@ import { NAvatar } from 'naive-ui';
 
 export const columns = [
   {
-    title: 'id',
-    key: 'id',
+    title: '计划编号',
+    key: 'id_num',
     width: 100,
   },
   {
-    title: '名称',
+    title: '申报计划名称',
     key: 'name',
     width: 100,
   },
   {
-    title: '头像',
-    key: 'avatar',
+    title: '项目来源单位',
+    key: 'department',
     width: 100,
-    render(row) {
-      return h(NAvatar, {
-        size: 48,
-        src: row.avatar,
-      });
-    },
+
+
+  },
+
+  {
+    title: '申报开始日期',
+    key: 'start_date',
+    width: 160,
   },
   {
-    title: '地址',
+    title: '申报结束日期',
+    key: 'end_date',
+    width: 160,
+  },
+  {
+    title: 'save_status',
     key: 'address',
     auth: ['basic_list'], // 同时根据权限控制是否显示
     ifShow: (_column) => {
@@ -32,19 +39,9 @@ export const columns = [
     },
     width: 150,
   },
-  {
-    title: '开始日期',
-    key: 'beginTime',
-    width: 160,
-  },
-  {
-    title: '结束日期',
-    key: 'endTime',
-    width: 160,
-  },
-  {
-    title: '创建时间',
-    key: 'date',
-    width: 100,
-  },
+  // {
+  //   title: '创建时间',
+  //   key: 'date',
+  //   width: 100,
+  // },
 ];

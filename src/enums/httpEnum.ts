@@ -7,6 +7,12 @@ export enum ResultEnum {
   TIMEOUT = 10042,
   TYPE = 'success',
 }
+export enum BaseResultEnum {
+  SUCCESS = 200,
+  ERROR = -1,
+  TIMEOUT = 10042,
+  TYPE = 'success',
+}
 
 /**
  * @description: 请求方法

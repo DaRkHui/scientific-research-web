@@ -23,15 +23,15 @@ export const columns = [
       });
     },
   },
-  {
-    title: '地址',
-    key: 'address',
-    auth: ['basic_list'], // 同时根据权限控制是否显示
-    ifShow: (_column) => {
-      return true; // 根据业务控制是否显示
-    },
-    width: 150,
-  },
+  // {
+  //   title: '地址',
+  //   key: 'address',
+  //   auth: ['basic_list'], // 同时根据权限控制是否显示
+  //   ifShow: (_column) => {
+  //     return true; // 根据业务控制是否显示
+  //   },
+  //   width: 150,
+  // },
   {
     title: '开始日期',
     key: 'beginTime',

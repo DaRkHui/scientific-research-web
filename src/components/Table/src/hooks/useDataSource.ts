@@ -55,13 +55,13 @@ export function useDataSource(
       const listField = APISETTING.listField;
 
       let pageParams = {};
-      const { page = 1, pageSize = 10 } = unref(getPaginationInfo) as PaginationProps;
+      const { page = 1, rows = 10 } = unref(getPaginationInfo) as PaginationProps;
 
       if ((isBoolean(pagination) && !pagination) || isBoolean(getPaginationInfo)) {
         pageParams = {};
       } else {
         pageParams[pageField] = (opt && opt[pageField]) || page;
-        pageParams[sizeField] = pageSize;
+        pageParams[sizeField] = rows;
       }
 
       let params = {
@@ -71,8 +71,9 @@ export function useDataSource(
         // The params parameter can be modified by outsiders
         params = (await beforeRequest(params)) || params;
       }
-      const res = await request(params);
-
+      const { data } = await request(params);
+      // debugger
+      const res = data.data
       const resultTotal = res[totalField] || 0;
       const currentPage = res[pageField];
 

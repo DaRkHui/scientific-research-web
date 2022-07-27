@@ -195,7 +195,7 @@
 
       //分页数量切换
       function updatePageSize(size) {
-        setPagination({ page: 1, pageSize: size });
+        setPagination({ page: 1, rows: size });
         reload();
       }
 
@@ -215,6 +215,7 @@
       //组装表格信息
       const getBindValues = computed(() => {
         const tableData = unref(getDataSourceRef);
+        console.log(tableData)
         const maxHeight = tableData.length ? `${unref(deviceHeight)}px` : 'auto';
         return {
           ...unref(getProps),

@@ -63,3 +63,9 @@ export interface Result<T = any> {
   info: string;
   list?: T;
 }
+export interface BaseResult<T = any> {
+  code: number;
+  type?: 'success' | 'error' | 'warning';
+  msg: string;
+  data?: T;
+}
