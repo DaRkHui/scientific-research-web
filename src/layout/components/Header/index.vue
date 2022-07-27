@@ -135,6 +135,7 @@
   import ProjectSetting from './ProjectSetting.vue';
   import { AsideMenu } from '@/layout/components/Menu';
   import { useProjectSetting } from '@/hooks/setting/useProjectSetting';
+  import { websiteConfig } from '@/config/website.config';
 
   export default defineComponent({
     name: 'PageHeader',
@@ -336,6 +337,7 @@
         getInverted,
         getMenuLocation,
         mixMenu,
+        websiteConfig,
       };
     },
   });

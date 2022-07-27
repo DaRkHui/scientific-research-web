@@ -93,6 +93,7 @@
   import { PersonOutline, LockClosedOutline, LogoGithub, LogoFacebook } from '@vicons/ionicons5';
   import { PageEnum } from '@/enums/pageEnum';
   import qs from 'qs';
+  import { websiteConfig } from '@/config/website.config';
   interface FormState {
     mobile: string;
     password: string;

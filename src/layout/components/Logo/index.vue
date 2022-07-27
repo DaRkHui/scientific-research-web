@@ -5,13 +5,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+  import { websiteConfig } from '@/config/website.config';
   export default {
     name: 'Index',
     props: {
       collapsed: {
         type: Boolean,
       },
+    },
+    data() {
+      return {
+        websiteConfig,
+      };
     },
   };
 </script>
