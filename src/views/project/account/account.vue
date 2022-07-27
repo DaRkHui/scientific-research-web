@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-grid :x-gap="24">
-      <n-grid-item span="3">
+      <n-grid-item span="4">
         <n-card :bordered="false" size="small" class="proCard">
           <span class="proCard-title">项目申报（）</span>
           <n-thing
@@ -28,7 +28,7 @@
           </n-thing>
         </n-card>
       </n-grid-item>
-      <n-grid-item span="21">
+      <n-grid-item span="20">
         <n-card :bordered="false" size="small" class="proCard">
         
           <List v-if="type === 1" />

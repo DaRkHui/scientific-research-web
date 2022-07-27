@@ -19,6 +19,7 @@ export const columns = [
 
 
   },
+ 
 
   {
     title: '申报开始日期',
@@ -29,6 +30,13 @@ export const columns = [
     title: '申报结束日期',
     key: 'end_date',
     width: 160,
+  },
+  {
+    title: '状态',
+    key: 'save_status',
+    width: 100,
+
+
   },
   {
     title: 'save_status',
