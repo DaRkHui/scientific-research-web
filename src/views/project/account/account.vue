@@ -3,7 +3,7 @@
     <n-grid :x-gap="24">
       <n-grid-item span="4">
         <n-card :bordered="false" size="small" class="proCard">
-          <span class="proCard-title">项目申报（）</span>
+          <span class="proCard-title">项目申报（{{ formParams.total }}）</span>
           <n-thing
             class="thing-cell"
             v-for="item in typeTabList"
@@ -23,14 +23,13 @@
             :class="{ 'thing-cell-on': type === item.key }"
             @click="switchType(item)"
           >
-            <template #header>{{ item.name }}</template>
+            <template #header>{{ item.name }}{{ item.desc }}</template>
             <!-- <template #description>{{ item.desc }}</template> -->
           </n-thing>
         </n-card>
       </n-grid-item>
       <n-grid-item span="20">
         <n-card :bordered="false" size="small" class="proCard">
-        
           <List v-if="type === 1" />
           <SafetySetting v-if="type === 2" />
         </n-card>
@@ -39,38 +38,57 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { h, reactive, ref, onMounted } from 'vue';
+  import { getTableList } from '@/api/project/list';
   import BasicSetting from './BasicSetting.vue';
   import SafetySetting from './SafetySetting.vue';
   import List from './list.vue';
-
-  const typeTabList = [
-    {
-      name: '已发布',
-      // desc: '个人账户信息设置',
-      key: 1,
-    },
-    {
-      name: '已关闭',
-      // desc: '密码，邮箱等设置',
-      key: 2,
-    },
-  ];
-  const throwTabList = [
-    {
-      name: '我的草稿',
-      // desc: '个人账户信息设置',
-      key: 3,
-    },
-  ];
+  const formParams = reactive({
+    total: '1',
+    published: '1',
+    closed: '1',
+  });
 
   const type = ref(1);
   const typeTitle = ref('已发布');
-
+  onMounted(async () => {
+    const result = await getTableList();
+    const ret = result.data.data;
+    formParams.total = ret.total;
+    formParams.published = ret.result.filter((item) => item.save_status == 1).length;
+    console.log('====================================');
+    console.log(ret.result.filter((item) => item.save_status == 0).length);
+    console.log('====================================');
+    formParams.closed = ret.result.filter((item) => item.save_status == 0);
+    // //  arr3=arr2.filter(item=>item.id == 20)
+    // console.log('====================================');
+    console.log(formParams);
+    // console.log('====================================');
+  });
+  const typeTabList = reactive([
+    {
+      name: `已发布(${formParams.published})`,
+      desc: '个人账户信息设置',
+      key: 1,
+    },
+    {
+      name: `已关闭(${formParams.closed})`,
+      desc: formParams.closed,
+      key: 2,
+    },
+  ]);
+  const throwTabList = [
+    {
+      name: `我的草稿(${formParams.closed})`,
+      desc: formParams.closed,
+      key: 3,
+    },
+  ];
   function switchType(e) {
     type.value = e.key;
     // typeTitle.value = e.name;
   }
+  const getTotalData = {};
 </script>
 <style lang="less" scoped>
   .proCard-title {

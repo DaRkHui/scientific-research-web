@@ -43,7 +43,7 @@ const transform: AxiosTransform = {
     // debugger;
     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
     if (isReturnNativeResponse) {
-      return res;
+      return res.data;
     }
     // 不进行任何处理，直接返回
     // 用于页面代码可能需要直接获取code，data，message这些信息时开启
@@ -63,7 +63,7 @@ const transform: AxiosTransform = {
     //  这里 code，result，message为 后台统一的字段，需要修改为项目自己的接口返回格式
     const { code, data, msg } = baseData;
     // 请求成功
-    
+
     const hasSuccess = data && Reflect.has(data, 'code') && code === BaseResultEnum.SUCCESS;
     // 是否显示提示信息
     if (isShowMessage) {
@@ -195,6 +195,7 @@ const transform: AxiosTransform = {
   responseInterceptorsCatch: (error: any) => {
     const $dialog = window['$dialog'];
     const $message = window['$message'];
+
     const { response, code, message } = error || {};
     // TODO 此处要根据后端接口返回格式修改
     const msg: string =

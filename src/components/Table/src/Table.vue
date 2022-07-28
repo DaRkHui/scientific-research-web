@@ -146,6 +146,7 @@
       'fetch-success',
       'fetch-error',
       'update:checked-row-keys',
+      'update:tableData',
       'edit-end',
       'edit-cancel',
       'edit-row-end',
@@ -216,6 +217,7 @@
       const getBindValues = computed(() => {
         const tableData = unref(getDataSourceRef);
         console.log(tableData)
+        emit('update:tableData', tableData);
         const maxHeight = tableData.length ? `${unref(deviceHeight)}px` : 'auto';
         return {
           ...unref(getProps),

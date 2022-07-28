@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import { NAvatar } from 'naive-ui';
+import { NAvatar, NTag } from 'naive-ui';
 
 export const columns = [
   {
@@ -16,11 +16,7 @@ export const columns = [
     title: '项目来源单位',
     key: 'department',
     width: 100,
-
-
   },
- 
-
   {
     title: '申报开始日期',
     key: 'start_date',
@@ -35,18 +31,28 @@ export const columns = [
     title: '状态',
     key: 'save_status',
     width: 100,
-
-
-  },
-  {
-    title: 'save_status',
-    key: 'address',
-    auth: ['basic_list'], // 同时根据权限控制是否显示
-    ifShow: (_column) => {
-      return true; // 根据业务控制是否显示
+    render(row) {
+      return h(
+        NTag,
+        {
+          type: ['', 'success', 'warning'][row.save_status],
+        },
+        {
+          default: () => ['未发布', '已发布', '已关闭'][row.save_status],
+        }
+      );
     },
-    width: 150,
+
   },
+  // {
+  //   title: 'save_status',
+  //   key: 'address',
+  //   auth: ['basic_list'], // 同时根据权限控制是否显示
+  //   ifShow: (_column) => {
+  //     return true; // 根据业务控制是否显示
+  //   },
+  //   width: 150,
+  // },
   // {
   //   title: '创建时间',
   //   key: 'date',

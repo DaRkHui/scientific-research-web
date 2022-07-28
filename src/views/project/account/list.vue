@@ -1,7 +1,7 @@
 <template>
   <n-card :bordered="false" class="proCard pmp">
     <template #header>
-      <span class="all"> 全部（2）</span>
+      <span class="all"> 全部（{{ total }}）</span>
       <span class="search"
         ><n-button text size="large" @click="showSearchBar">
           <template #icon>
@@ -27,6 +27,7 @@
       ref="actionRef"
       :actionColumn="actionColumn"
       @update:checked-row-keys="onCheckedRow"
+      @update:tableData="getTableData"
       :scroll-x="1090"
     >
       <template #tableTitle>
@@ -40,9 +41,9 @@
         </n-button>
       </template>
 
-      <template #toolbar>
+      <!-- <template #toolbar>
         <n-button type="primary" @click="reloadTable">刷新数据</n-button>
-      </template>
+      </template> -->
     </BasicTable>
 
     <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
@@ -88,10 +89,10 @@
   import { useRouter } from 'vue-router';
 
   const rules = {
-    name: {
+    keyword: {
       required: true,
       trigger: ['blur', 'input'],
-      message: '请输入名称',
+      message: '请输入检索条件',
     },
     address: {
       required: true,
@@ -108,126 +109,20 @@
 
   const schemas: FormSchema[] = [
     {
-      field: 'name',
+      field: 'keyword',
       labelMessage: '这是一个提示',
       component: 'NInput',
-      label: '姓名',
+      label: '关键词检索',
       componentProps: {
-        placeholder: '请输入姓名',
+        placeholder: '请输入计划编号/计划名称/项目来源',
         onInput: (e: any) => {
           console.log(e);
+          formParams.keyword = e;
         },
       },
-      rules: [{ required: true, message: '请输入姓名', trigger: ['blur'] }],
+      rules: [{ required: true, message: '请输入检索条件', trigger: ['blur'] }],
     },
-    {
-      field: 'mobile',
-      component: 'NInputNumber',
-      label: '手机',
-      componentProps: {
-        placeholder: '请输入手机号码',
-        showButton: false,
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'type',
-      component: 'NSelect',
-      label: '类型',
-      componentProps: {
-        placeholder: '请选择类型',
-        options: [
-          {
-            label: '舒适性',
-            value: 1,
-          },
-          {
-            label: '经济性',
-            value: 2,
-          },
-        ],
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'makeDate',
-      component: 'NDatePicker',
-      label: '预约时间',
-      defaultValue: 1183135260000,
-      componentProps: {
-        type: 'date',
-        clearable: true,
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'makeTime',
-      component: 'NTimePicker',
-      label: '停留时间',
-      componentProps: {
-        clearable: true,
-        onUpdateValue: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'status',
-      label: '状态',
-      //插槽
-      slot: 'statusSlot',
-    },
-    {
-      field: 'makeProject',
-      component: 'NCheckbox',
-      label: '预约项目',
-      componentProps: {
-        placeholder: '请选择预约项目',
-        options: [
-          {
-            label: '种牙',
-            value: 1,
-          },
-          {
-            label: '补牙',
-            value: 2,
-          },
-          {
-            label: '根管',
-            value: 3,
-          },
-        ],
-        onUpdateChecked: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
-      field: 'makeSource',
-      component: 'NRadioGroup',
-      label: '来源',
-      componentProps: {
-        options: [
-          {
-            label: '网上',
-            value: 1,
-          },
-          {
-            label: '门店',
-            value: 2,
-          },
-        ],
-        onUpdateChecked: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
+   
   ];
 
   const router = useRouter();
@@ -239,11 +134,12 @@
   const showSearch = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    saveStatus: '',
+    saveStatus: '1',
     keyword: '',
     type: '',
   });
 
+  const total = ref(0);
   const params = ref({
     page: 1,
     rows: 20,
@@ -261,14 +157,14 @@
         actions: [
           {
             label: '删除',
-            icon: 'ic:outline-delete-outline',
+            // icon: 'ic:outline-delete-outline',
             onClick: handleDelete.bind(null, record),
             // 根据业务控制是否显示 isShow 和 auth 是并且关系
             ifShow: () => {
               return true;
             },
             // 根据权限控制是否显示: 有权限，会显示，支持多个
-            auth: ['basic_list'],
+            // auth: ['basic_list'],
           },
           {
             label: '编辑',
@@ -276,26 +172,26 @@
             ifShow: () => {
               return true;
             },
-            auth: ['basic_list'],
+            // auth: ['basic_list'],
           },
         ],
-        dropDownActions: [
-          {
-            label: '启用',
-            key: 'enabled',
-            // 根据业务控制是否显示: 非enable状态的不显示启用按钮
-            ifShow: () => {
-              return true;
-            },
-          },
-          {
-            label: '禁用',
-            key: 'disabled',
-            ifShow: () => {
-              return true;
-            },
-          },
-        ],
+        // dropDownActions: [
+        //   {
+        //     label: '启用',
+        //     key: 'enabled',
+        //     // 根据业务控制是否显示: 非enable状态的不显示启用按钮
+        //     ifShow: () => {
+        //       return true;
+        //     },
+        //   },
+        //   {
+        //     label: '禁用',
+        //     key: 'disabled',
+        //     ifShow: () => {
+        //       return true;
+        //     },
+        //   },
+        // ],
         select: (key) => {
           message.info(`您点击了，${key} 按钮`);
         },
@@ -304,8 +200,8 @@
   });
 
   const [register, {}] = useForm({
-    gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
-    labelWidth: 80,
+    gridProps: { cols: '2' },
+    labelWidth: 180,
     schemas,
   });
 
@@ -327,9 +223,14 @@
   function onCheckedRow(rowKeys) {
     console.log(rowKeys);
   }
+  function getTableData(tableData) {
+    console.log(tableData);
+    total.value = tableData.length;
+  }
 
   function reloadTable() {
     actionRef.value.reload();
+    // loadDataTable();
   }
 
   function confirmForm(e) {
