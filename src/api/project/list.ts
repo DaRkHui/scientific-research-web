@@ -8,7 +8,15 @@ export interface BasicResponseModel<T = any> {
 export function getTableList(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply_plan',
-    method: 'get',
+    method: 'GET',
+    params,
+  });
+}
+//获取table
+export function newApply(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply_plan',
+    method: 'POST',
     params,
   });
 }

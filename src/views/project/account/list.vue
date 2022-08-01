@@ -31,14 +31,15 @@
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <n-button type="primary" size="large" @click="addTable">
+        <router-link to="/project/newplan"> 新增申报计划</router-link>
+        <!-- <n-button type="primary" size="large" @click="addTable">
           <template #icon>
             <n-icon>
               <PlusOutlined />
             </n-icon>
           </template>
           新增申报计划
-        </n-button>
+        </n-button> -->
       </template>
 
       <!-- <template #toolbar>
@@ -122,7 +123,6 @@
       },
       rules: [{ required: true, message: '请输入检索条件', trigger: ['blur'] }],
     },
-   
   ];
 
   const router = useRouter();
@@ -207,6 +207,7 @@
 
   function addTable() {
     showModal.value = true;
+    router.replace({ path: '/project/newplan' });
   }
   function showSearchBar() {
     showSearch.value = !showSearch.value;

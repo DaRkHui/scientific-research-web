@@ -25,6 +25,7 @@ const routes: Array<RouteRecordRaw> = [
       icon: renderIcon(SettingOutlined),
       sort: 5,
     },
+
     children: [
       {
         path: 'account',
@@ -33,6 +34,27 @@ const routes: Array<RouteRecordRaw> = [
           title: '申报计划',
         },
         component: () => import('@/views/project/account/account.vue'),
+        // children: [
+        //   {
+        //     path: 'newplan',
+        //     name: 'account-new',
+        //     meta: {
+        //       title: '新增',
+        //       hidden: true,
+        //     },
+        //     component: () => import('@/views/project/account/newPlan.vue'),
+        //   },
+        // ],
+      },
+      {
+        path: 'newplan',
+        name: 'project-new',
+        meta: {
+          title: '新增',
+          hidden: true,
+          hideTab: true,
+        },
+        component: () => import('@/views/project/account/newPlan.vue'),
       },
       {
         path: 'system',

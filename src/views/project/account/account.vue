@@ -23,7 +23,7 @@
             :class="{ 'thing-cell-on': type === item.key }"
             @click="switchType(item)"
           >
-            <template #header>{{ item.name }}{{ item.desc }}</template>
+            <template #header>{{ item.name }}</template>
             <!-- <template #description>{{ item.desc }}</template> -->
           </n-thing>
         </n-card>
@@ -38,7 +38,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { h, reactive, ref, onMounted } from 'vue';
+  import { h, reactive, ref, onMounted, onBeforeMount,onUpdated } from 'vue';
   import { getTableList } from '@/api/project/list';
   import BasicSetting from './BasicSetting.vue';
   import SafetySetting from './SafetySetting.vue';
@@ -51,7 +51,7 @@
 
   const type = ref(1);
   const typeTitle = ref('已发布');
-  onMounted(async () => {
+  onBeforeMount(async () => {
     const result = await getTableList();
     const ret = result.data.data;
     formParams.total = ret.total;
@@ -68,7 +68,7 @@
   const typeTabList = reactive([
     {
       name: `已发布(${formParams.published})`,
-      desc: '个人账户信息设置',
+      // desc: '个人账户信息设置',
       key: 1,
     },
     {
@@ -80,7 +80,7 @@
   const throwTabList = [
     {
       name: `我的草稿(${formParams.closed})`,
-      desc: formParams.closed,
+      // desc: formParams.closed,
       key: 3,
     },
   ];
