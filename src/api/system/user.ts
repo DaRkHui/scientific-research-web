@@ -59,6 +59,13 @@ export function changePassword(params, uid) {
     }
   );
 }
+export function queryapprovermenu(params) {
+  return http.request({
+    url: '/appme/queryapprovermenu',
+    method: 'POST',
+    params,
+  });
+}
 
 /**
  * @description: 用户登出

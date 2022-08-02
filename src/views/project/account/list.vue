@@ -31,7 +31,9 @@
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <router-link to="/project/newplan"> 新增申报计划</router-link>
+        <router-link to="/project/newplan">
+          <n-button type="primary" size="large">新增申报计划</n-button></router-link
+        >
         <!-- <n-button type="primary" size="large" @click="addTable">
           <template #icon>
             <n-icon>

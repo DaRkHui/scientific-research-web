@@ -10,6 +10,7 @@ import { storage } from '@/utils/Storage';
 
 export interface IUserState {
   token: string;
+  userid: string;
   username: string;
   welcome: string;
   avatar: string;
@@ -21,6 +22,7 @@ export const useUserStore = defineStore({
   id: 'app-user',
   state: (): IUserState => ({
     token: Storage.get(ACCESS_TOKEN, ''),
+    userid: '',
     username: '',
     welcome: '',
     avatar: '',
@@ -30,6 +32,9 @@ export const useUserStore = defineStore({
   getters: {
     getToken(): string {
       return this.token;
+    },
+    getUserId(): string {
+      return this.userid;
     },
     getAvatar(): string {
       return this.avatar;
@@ -51,11 +56,17 @@ export const useUserStore = defineStore({
     setAvatar(avatar: string) {
       this.avatar = avatar;
     },
+    setNickname(usernam: string) {
+      this.username = usernam;
+    },
     setPermissions(permissions) {
       this.permissions = permissions;
     },
     setUserInfo(info) {
       this.info = info;
+    },
+    setUserId(userid) {
+      this.userid = userid;
     },
     // 登录
     async login(userInfo) {
@@ -68,7 +79,10 @@ export const useUserStore = defineStore({
           storage.set(ACCESS_TOKEN, list.lastdoc, ex);
           storage.set(CURRENT_USER, list, ex);
           storage.set(IS_LOCKSCREEN, false);
+          this.setAvatar(list.picture);
+          this.setNickname(list.username);
           this.setToken(list.lastdoc);
+          this.setUserId(list.userid);
           this.setUserInfo(list);
         }
         return Promise.resolve(response);

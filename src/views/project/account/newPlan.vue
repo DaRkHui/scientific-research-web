@@ -10,7 +10,7 @@
         class="newPlan"
         inline
       >
-        <span>编辑申报计划</span>
+        <span class="from-title">编辑申报计划</span>
         <n-divider />
         <n-grid cols="1 s:1 m:2 l:2 xl:2 2xl:2" responsive="screen">
           <n-grid-item>
@@ -29,11 +29,11 @@
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="预约事项" path="type">
+            <n-form-item label="项目类别" path="type" required>
               <n-select
-                placeholder="请选择预约事项"
+                placeholder="请选择项目类别"
                 :options="matterList"
-                v-model:value="formValue.matter"
+                v-model:value="formValue.type"
                 multiple
               />
             </n-form-item>
@@ -58,7 +58,7 @@
               </n-radio-group>
             </n-form-item>
           </n-grid-item>
-          <n-grid-item>
+          <!-- <n-grid-item>
             <n-form-item label="申报限额" path="need_review">
               <n-radio-group v-model:value="formValue.need_review" name="sex">
                 <n-space>
@@ -66,6 +66,16 @@
                   <n-radio :value="2">否</n-radio>
                 </n-space>
               </n-radio-group>
+            </n-form-item>
+          </n-grid-item> -->
+          <n-grid-item>
+            <n-form-item label="审核流程设置" path="need_review" required>
+              <n-select
+                placeholder="请选择审核流程"
+                :options="approvalList"
+                v-model:value="formValue.approval_id"
+                multiple
+              />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
@@ -76,7 +86,7 @@
 
           <!-- <n-grid-item> </n-grid-item> -->
         </n-grid>
-        <span>材料附件模板</span>
+        <span class="from-title">材料附件模板</span>
         <n-divider />
         <br />
         <div style="margin-left: 80px">
@@ -92,25 +102,24 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, unref, reactive } from 'vue';
+  import { ref, unref, reactive, onMounted } from 'vue';
   import { useMessage } from 'naive-ui';
   import { BasicUpload } from '@/components/Upload';
   import { useGlobSetting } from '@/hooks/setting';
   import { newApply } from '@/api/project/list';
+  import { queryapprovermenu } from '@/api/system/user';
+  import { useUserStore } from '@/store/modules/user';
+  import { useRouter } from 'vue-router';
   const globSetting = useGlobSetting();
-
+  const userStore = useUserStore();
   const matterList = [
     {
-      label: '种牙',
+      label: '横向',
       value: 1,
     },
     {
-      label: '补牙',
+      label: '纵向',
       value: 2,
-    },
-    {
-      label: '根管',
-      value: 3,
     },
   ];
 
@@ -157,21 +166,22 @@
       message: '请选择预约时间',
       trigger: ['blur', 'change'],
     },
-    type: {
-      required: true,
-      type: 'number',
-      message: '请选择项目列别',
-      trigger: 'change',
-    },
+    // type: {
+    //   // required: true,
+    //   type: 'number',
+    //   message: '请选择项目列别',
+    //   trigger: 'blur',
+    // },
   };
-
+  const approvalList = ref([]);
   const formRef: any = ref(null);
   const message = useMessage();
   const { uploadUrl } = globSetting;
-
+  const router = useRouter();
+  // debugger;
   const defaultValueRef = () => ({
     approval_id: '',
-    created_user_id: '',
+    created_user_id: userStore.userid,
     department: '',
     des: '',
     end_date: [],
@@ -179,7 +189,7 @@
     id_num: '',
     material_template_info: '',
     name: '',
-    need_review: 0,
+    need_review: 2,
     save_status: 0,
     start_date: [],
     type: 1,
@@ -217,10 +227,33 @@
       }
     });
   }
+  onMounted(async () => {
+    const params = {
+      name: '',
+      totalcount: 0,
+      pageno: 1,
+      pagesize: 10,
+    };
 
+    let formData = new window.FormData();
+    for (const key in params) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        const element = params[key];
+        formData.append(key, element);
+      }
+    }
+    queryapprovermenu(formData).then((res) => {
+      const ret = res.map((item) => {
+        return Object.assign({}, { value: item.approver_id, label: item.name });
+      });
+      console.log(ret);
+      approvalList.value = ret;
+    });
+  });
   function resetForm() {
-    formRef.value.restoreValidation();
-    formValue = Object.assign(unref(formValue), defaultValueRef());
+    router.replace({ path: '/project/account' });
+    // formRef.value.restoreValidation();
+    // formValue = Object.assign(unref(formValue), defaultValueRef());
   }
 
   function uploadChange(list: string[]) {
@@ -233,5 +266,9 @@
     flex-wrap: wrap;
     justify-content: center;
     margin: 10px;
+    .from-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
   }
 </style>

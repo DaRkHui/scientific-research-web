@@ -34,6 +34,7 @@ export interface Meta {
   externalLink?: string;
   //隐藏
   hidden?: boolean;
+  hideTab?: boolean;
 }
 
 export interface Menu {

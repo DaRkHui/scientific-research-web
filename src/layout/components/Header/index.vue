@@ -155,8 +155,8 @@
       const dialog = useDialog();
       const { getNavMode, getNavTheme, getHeaderSetting, getMenuSetting, getCrumbsSetting } =
         useProjectSetting();
-
-      const { username } = userStore?.info || {};
+      // debugger;
+      const username = userStore?.username || {};
 
       const drawerSetting = ref();
 
