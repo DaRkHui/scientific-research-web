@@ -3,6 +3,7 @@ export interface PaginationProps {
   total?: number;
   rows?: number;
   pageSizes?: number[];
+  itemCount?: number;
   showSizePicker?: boolean;
   showQuickJumper?: boolean;
 }

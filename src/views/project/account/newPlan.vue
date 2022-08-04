@@ -40,12 +40,12 @@
           </n-grid-item>
           <n-grid-item>
             <n-form-item label="申报开始时间" path="start_date">
-              <n-date-picker type="datetime" v-model:value="formValue.start_date" />
+              <n-date-picker type="date" v-model:value="formValue.start_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
             <n-form-item label="申报结束时间" path="end_date">
-              <n-date-picker type="datetime" v-model:value="formValue.end_date" />
+              <n-date-picker type="date" v-model:value="formValue.end_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
@@ -105,11 +105,13 @@
   import { ref, unref, reactive, onMounted } from 'vue';
   import { useMessage } from 'naive-ui';
   import { BasicUpload } from '@/components/Upload';
+  import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useGlobSetting } from '@/hooks/setting';
   import { newApply } from '@/api/project/list';
   import { queryapprovermenu } from '@/api/system/user';
   import { useUserStore } from '@/store/modules/user';
   import { useRouter } from 'vue-router';
+  import { formatToDate } from '@/utils/dateUtil.ts';
   const globSetting = useGlobSetting();
   const userStore = useUserStore();
   const matterList = [
@@ -192,7 +194,7 @@
     need_review: 2,
     save_status: 0,
     start_date: [],
-    type: 1,
+    type: '1',
   });
 
   let formValue = reactive(defaultValueRef());
@@ -206,8 +208,11 @@
   });
 
   function formSubmit(status) {
-    formRef.value.validate((errors) => {
+    formRef.value.validate(async (errors) => {
       if (!errors) {
+        formValue.save_status = status;
+        formValue.end_date = formatToDate(formValue.end_date);
+        formValue.start_date = formatToDate(formValue.start_date);
         formValue.save_status = status;
         let formData = new window.FormData();
         for (const key in formValue) {
@@ -216,7 +221,23 @@
             formData.append(key, element);
           }
         }
-        const result = newApply(formData);
+        // debugger;
+        const result = await newApply(formData);
+        // console.log(result.data.code);
+        let code = result.data.code;
+        // debugger
+        if (code == BaseResultEnum.SUCCESS) {
+          if (status) {
+            message.success('申请计划发布成功');
+          } else {
+            message.success('保存草稿成功');
+          }
+          router.replace({ path: '/project/account' });
+          // debugger
+        } else {
+          message.info(result.data.info);
+        }
+
         // const ret = result.data.data;
 
         // //  arr3=arr2.filter(item=>item.id == 20)

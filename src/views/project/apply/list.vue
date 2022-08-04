@@ -82,10 +82,9 @@
 <script lang="ts" setup>
   import { h, reactive, ref } from 'vue';
   import { useMessage } from 'naive-ui';
-  import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList, reviewPlan } from '@/api/project/list';
+  import { getTableList } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
@@ -170,7 +169,7 @@
             // auth: ['basic_list'],
           },
           {
-            label: '预览',
+            label: '编辑',
             onClick: handleEdit.bind(null, record),
             ifShow: () => {
               return true;
@@ -255,25 +254,13 @@
   }
 
   function handleEdit(record: Recordable) {
-    router.replace({ path: '/project/detail', query: { id: record.id } });
-    // console.log('点击了编辑', record);
-    // router.push({ name: 'basic-info', params: { id: record.id } });
+    console.log('点击了编辑', record);
+    router.push({ name: 'basic-info', params: { id: record.id } });
   }
 
-  async function handleDelete(record) {
-    const ids = [record.id];
-
-    let result = await reviewPlan({ ids: ids });
-
-    let code = result.data.code;
-
-    if (code == BaseResultEnum.SUCCESS) {
-      message.success('删除成功');
-    } else {
-      message.info(result.data.info);
-    }
-
-    reloadTable();
+  function handleDelete(record: Recordable) {
+    console.log('点击了删除', record);
+    message.info('点击了删除');
   }
 
   function handleSubmit(values: Recordable) {
@@ -303,5 +290,3 @@
     }
   }
 </style>
-
-function ids(ids: any[], ids: any[]) { throw new Error('Function not implemented.'); }

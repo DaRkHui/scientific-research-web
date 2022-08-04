@@ -47,6 +47,25 @@ const routes: Array<RouteRecordRaw> = [
         // ],
       },
       {
+        path: 'apply',
+        name: 'project-apply',
+        meta: {
+          title: '项目申报',
+        },
+        component: () => import('@/views/project/apply/list.vue'),
+        // children: [
+        //   {
+        //     path: 'newplan',
+        //     name: 'account-new',
+        //     meta: {
+        //       title: '新增',
+        //       hidden: true,
+        //     },
+        //     component: () => import('@/views/project/account/newPlan.vue'),
+        //   },
+        // ],
+      },
+      {
         path: 'newplan',
         name: 'project-new',
         meta: {
@@ -55,6 +74,16 @@ const routes: Array<RouteRecordRaw> = [
           hideTab: true,
         },
         component: () => import('@/views/project/account/newPlan.vue'),
+      },
+      {
+        path: 'detail',
+        name: 'project-detail',
+        meta: {
+          title: '项目申报详情',
+          hidden: true,
+          hideTab: true,
+        },
+        component: () => import('@/views/project/account/detail.vue'),
       },
       {
         path: 'system',
