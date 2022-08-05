@@ -48,28 +48,9 @@
               <n-date-picker type="date" v-model:value="formValue.end_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
+
           <n-grid-item>
-            <n-form-item label="是否需要专家线上评审" path="need_review" required>
-              <n-radio-group v-model:value="formValue.need_review" name="need_review">
-                <n-space>
-                  <n-radio :value="1">是</n-radio>
-                  <n-radio :value="2">否</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
-          </n-grid-item>
-          <!-- <n-grid-item>
-            <n-form-item label="申报限额" path="need_review">
-              <n-radio-group v-model:value="formValue.need_review" name="sex">
-                <n-space>
-                  <n-radio :value="1">是</n-radio>
-                  <n-radio :value="2">否</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
-          </n-grid-item> -->
-          <n-grid-item>
-            <n-form-item label="审核流程设置" path="need_review" required>
+            <n-form-item label="审核流程设置" path="approval_id" required>
               <n-select
                 placeholder="请选择审核流程"
                 :options="approvalList"
@@ -78,6 +59,36 @@
               />
             </n-form-item>
           </n-grid-item>
+          <n-grid-item>
+            <n-form-item label="项目级别" path="level" required>
+              <n-select
+                placeholder="请选择项目级别"
+                :options="levelList"
+                v-model:value="formValue.level"
+                multiple
+              />
+            </n-form-item>
+          </n-grid-item>
+          <!-- <n-grid-item>
+            <n-form-item label="是否需要专家线上评审" path="need_review" required>
+              <n-radio-group v-model:value="formValue.need_review" name="need_review">
+                <n-space>
+                  <n-radio :value="1">是</n-radio>
+                  <n-radio :value="2">否</n-radio>
+                </n-space>
+              </n-radio-group>
+            </n-form-item>
+          </n-grid-item> -->
+          <!-- <n-grid-item>
+            <n-form-item label="申报限额" path="need_review">
+              <n-radio-group v-model:value="formValue.need_review" name="sex" disabled>
+                <n-space>
+                  <n-radio :value="1">是</n-radio>
+                  <n-radio :value="2">否</n-radio>
+                </n-space>
+              </n-radio-group>
+            </n-form-item>
+          </n-grid-item> -->
           <n-grid-item>
             <n-form-item label="申报说明" path="des">
               <n-input v-model:value="formValue.des" type="textarea" placeholder="请输入预约备注" />
@@ -176,6 +187,24 @@
     // },
   };
   const approvalList = ref([]);
+  const levelList = [
+    {
+      label: '院级',
+      value: 4,
+    },
+    {
+      label: '市厅级',
+      value: 3,
+    },
+    {
+      label: '省部级级',
+      value: 2,
+    },
+    {
+      label: '国家级',
+      value: 1,
+    },
+  ];
   const formRef: any = ref(null);
   const message = useMessage();
   const { uploadUrl } = globSetting;
@@ -195,6 +224,7 @@
     save_status: 0,
     start_date: [],
     type: '1',
+    level: '',
   });
 
   let formValue = reactive(defaultValueRef());

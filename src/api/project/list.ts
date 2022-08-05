@@ -5,10 +5,18 @@ export interface BasicResponseModel<T = any> {
   msg: string;
   data: T;
 }
-//获取table
+//获取j计划table
 export function getTableList(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply_plan',
+    method: 'GET',
+    params,
+  });
+}
+//获取申报table
+export function getApplyList(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply',
     method: 'GET',
     params,
   });
@@ -21,10 +29,18 @@ export function newApply(params) {
     params,
   });
 }
-//申请计划详情
-export function getInfo(params) {
+//计划详情
+export function getApplyInfo(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply_plan/info',
+    method: 'GET',
+    params,
+  });
+}
+//申报详情
+export function getInfo(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/plan/info',
     method: 'GET',
     params,
   });

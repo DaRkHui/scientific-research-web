@@ -3,9 +3,11 @@
     <div class="n-layout-page-header">
       <n-card :bordered="false">
         <n-breadcrumb separator=">">
-          <n-breadcrumb-item> 返回上一级<template #separator> | </template></n-breadcrumb-item>
+          <n-breadcrumb-item @click="handleBack">
+            返回上一级<template #separator> | </template></n-breadcrumb-item
+          >
           <n-breadcrumb-item> 项目申报详情</n-breadcrumb-item>
-          <n-breadcrumb-item> 平山道支行</n-breadcrumb-item>
+          <n-breadcrumb-item> {{ detail.name }}</n-breadcrumb-item>
         </n-breadcrumb>
       </n-card>
     </div>
@@ -32,9 +34,13 @@
             <n-descriptions-item label="申报计划名称">{{ detail.name }}</n-descriptions-item>
             <n-descriptions-item label="项目来源单位">{{ detail.department }}</n-descriptions-item>
             <n-descriptions-item label="计划编号">{{ detail.id_num }}</n-descriptions-item>
-            <n-descriptions-item label="项目类型">{{ detail.type }}</n-descriptions-item>
-            <n-descriptions-item label="项目级别">{{ detail.name }}</n-descriptions-item>
-            <n-descriptions-item label="申报限额">{{ detail.name }}</n-descriptions-item>
+            <n-descriptions-item label="项目类型">{{
+              typeFilters(detail.type)
+            }}</n-descriptions-item>
+            <n-descriptions-item label="项目级别">{{
+              levelFilters(detail.level)
+            }}</n-descriptions-item>
+            <!-- <n-descriptions-item label="申报限额">{{ detail.name }}</n-descriptions-item> -->
           </n-descriptions>
 
           <n-descriptions
@@ -51,24 +57,23 @@
             class="decInfo"
           >
             <n-descriptions-item label="申报时间"
-              >{{ detail.start_date }}至{{ detail.end_date }}</n-descriptions-item
+              >{{ detail.start_date }} 至 {{ detail.end_date }}</n-descriptions-item
             >
             <n-descriptions-item label="申报说明">{{ detail.des }}</n-descriptions-item>
           </n-descriptions>
         </div>
         <div class="side">
           <p class="title">申报材料</p>
-          <spn
-            >申报材料使用要求申报材料使用要求申报材料使材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求。</spn
+          <span
+            >申报材料使用要求申报材料使用要求申报材料使材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求。</span
           >
-          <n-timeline>
+          <n-timeline style="line-height: 5; margin: 8%">
             <n-timeline-item type="warning" title="申报书模版.doc" />
-
             <n-timeline-item type="warning" title="任务书模版.doc" />
             <n-timeline-item type="warning" title="项目中期模版.doc" />
             <n-timeline-item type="warning" title="项目结项模版.doc" />
           </n-timeline>
-          <n-button type="info" ghost> 项目申报 </n-button>
+          <p style="text-align: center"><n-button type="info" ghost> 项目申报 </n-button></p>
         </div>
       </div>
     </n-card>
@@ -80,13 +85,18 @@
   import { useMessage } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useRouter, useRoute } from 'vue-router';
-  import { getInfo } from '@/api/project/list';
-
+  import { getApplyInfo } from '@/api/project/list';
+  import { levelFilters, typeFilters } from '@/utils/filters.ts';
+  const message = useMessage();
   const router = useRouter();
   const route = useRoute();
+
   const detail = ref<any>({});
+  const handleBack = () => {
+    router.back();
+  };
   onMounted(async () => {
-    const data = await getInfo({ id: route.query.id });
+    const data = await getApplyInfo({ id: route.query.id });
     detail.value = data.data.data;
     console.log('====================================');
     console.log(detail);
@@ -124,12 +134,14 @@
     background-color: #f8fafb;
     width: 20%;
     height: 600px;
-    padding: 10px;
+    padding: 20px;
+    color: #999999;
     .title {
       text-align: center;
       font-size: 16px;
       font-weight: bold;
-      line-height: 40px;
+      line-height: 30px;
+      color: #5C6268;
     }
   }
 </style>
