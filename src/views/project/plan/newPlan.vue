@@ -262,7 +262,7 @@
           } else {
             message.success('保存草稿成功');
           }
-          router.replace({ path: '/project/account' });
+          router.replace({ path: '/project/plan' });
           // debugger
         } else {
           message.info(result.data.info);
@@ -302,7 +302,7 @@
     });
   });
   function resetForm() {
-    router.replace({ path: '/project/account' });
+    router.replace({ path: '/project/plan' });
     // formRef.value.restoreValidation();
     // formValue = Object.assign(unref(formValue), defaultValueRef());
   }

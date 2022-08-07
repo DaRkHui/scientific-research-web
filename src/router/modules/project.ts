@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/project',
     name: 'Project',
-    redirect: '/project/account',
+    redirect: '/project/plan',
     component: Layout,
     meta: {
       title: '项目管理',
@@ -28,21 +28,21 @@ const routes: Array<RouteRecordRaw> = [
 
     children: [
       {
-        path: 'account',
-        name: 'project-account',
+        path: 'plan',
+        name: 'project-plan',
         meta: {
           title: '申报计划',
         },
-        component: () => import('@/views/project/account/account.vue'),
+        component: () => import('@/views/project/plan/plan.vue'),
         // children: [
         //   {
         //     path: 'newplan',
-        //     name: 'account-new',
+        //     name: 'plan-new',
         //     meta: {
         //       title: '新增',
         //       hidden: true,
         //     },
-        //     component: () => import('@/views/project/account/newPlan.vue'),
+        //     component: () => import('@/views/project/plan/newPlan.vue'),
         //   },
         // ],
       },
@@ -56,12 +56,12 @@ const routes: Array<RouteRecordRaw> = [
         // children: [
         //   {
         //     path: 'newplan',
-        //     name: 'account-new',
+        //     name: 'plan-new',
         //     meta: {
         //       title: '新增',
         //       hidden: true,
         //     },
-        //     component: () => import('@/views/project/account/newPlan.vue'),
+        //     component: () => import('@/views/project/plan/newPlan.vue'),
         //   },
         // ],
       },
@@ -73,7 +73,7 @@ const routes: Array<RouteRecordRaw> = [
           hidden: true,
           hideTab: true,
         },
-        component: () => import('@/views/project/account/newPlan.vue'),
+        component: () => import('@/views/project/plan/newPlan.vue'),
       },
       {
         path: 'detail',
@@ -83,7 +83,7 @@ const routes: Array<RouteRecordRaw> = [
           hidden: true,
           hideTab: true,
         },
-        component: () => import('@/views/project/account/detail.vue'),
+        component: () => import('@/views/project/plan/detail.vue'),
       },
       {
         path: 'system',
