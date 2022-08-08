@@ -5,10 +5,18 @@ export interface BasicResponseModel<T = any> {
   msg: string;
   data: T;
 }
-//获取j计划table
+//获取计划table
 export function getTableList(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply_plan',
+    method: 'GET',
+    params,
+  });
+}
+//获取计划table和状态
+export function getTableListStatus(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply_plan/status',
     method: 'GET',
     params,
   });
@@ -17,6 +25,14 @@ export function getTableList(params) {
 export function getApplyList(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply',
+    method: 'GET',
+    params,
+  });
+}
+//获取评审table
+export function getReviewList(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_plan',
     method: 'GET',
     params,
   });
@@ -46,7 +62,7 @@ export function getInfo(params) {
   });
 }
 //删除申请
-export function reviewPlan(params) {
+export function deleteApply(params) {
   return http.request<BasicResponseModel>({
     headers: { 'Content-Type': ContentTypeEnum.JSON },
     url: '/v1/project/apply_plan',

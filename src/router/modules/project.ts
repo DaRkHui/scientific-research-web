@@ -37,10 +37,11 @@ const routes: Array<RouteRecordRaw> = [
         // children: [
         //   {
         //     path: 'newplan',
-        //     name: 'plan-new',
+        //     name: 'project-new',
         //     meta: {
         //       title: '新增',
         //       hidden: true,
+        //       hideTab: true,
         //     },
         //     component: () => import('@/views/project/plan/newPlan.vue'),
         //   },
@@ -53,17 +54,7 @@ const routes: Array<RouteRecordRaw> = [
           title: '项目申报',
         },
         component: () => import('@/views/project/apply/list.vue'),
-        // children: [
-        //   {
-        //     path: 'newplan',
-        //     name: 'plan-new',
-        //     meta: {
-        //       title: '新增',
-        //       hidden: true,
-        //     },
-        //     component: () => import('@/views/project/plan/newPlan.vue'),
-        //   },
-        // ],
+
       },
       {
         path: 'newplan',
@@ -86,13 +77,31 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/project/plan/detail.vue'),
       },
       {
-        path: 'system',
-        name: 'project-system',
+        path: 'review',
+        name: 'project-review',
         meta: {
-          title: '系统设置',
+          title: '评审计划',
         },
-        component: () => import('@/views/project/system/system.vue'),
+        component: () => import('@/views/project/review/review.vue'),
       },
+      {
+        path: 'newReview',
+        name: 'review-new',
+        meta: {
+          title: '新增',
+          hidden: true,
+          hideTab: true,
+        },
+        component: () => import('@/views/project/review/newReview.vue'),
+      },
+      // {
+      //   path: 'system',
+      //   name: 'project-system',
+      //   meta: {
+      //     title: '系统设置',
+      //   },
+      //   component: () => import('@/views/project/system/system.vue'),
+      // },
     ],
   },
 ];

@@ -28,7 +28,11 @@
             </div>
           </template>
           <p style="color: rgb(123, 160, 207); line-height: 3">{{ levelFilters(item.level) }}</p>
-          <n-button type="info" ghost> 项目申报 </n-button>
+
+          <n-button type="info" strong secondary disabled v-if="item.dec_status == '1'">
+            已申报
+          </n-button>
+          <n-button type="info" ghost v-else> 项目申报 </n-button>
         </n-card>
       </div>
     </div>
@@ -41,7 +45,7 @@
   import { useMessage } from 'naive-ui';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList } from '@/api/project/list';
+  import { getTableListStatus } from '@/api/project/list';
   import { levelFilters } from '@/utils/filters.ts';
   import { useRouter } from 'vue-router';
 
@@ -58,7 +62,7 @@
   });
 
   onMounted(async () => {
-    const data = await getTableList({ ...params.value });
+    const data = await getTableListStatus({ ...params.value });
     // console.log('====================================');
     // console.log(data.data.。result);
     // console.log('====================================');
@@ -109,7 +113,7 @@
       justify-content: center;
       flex-direction: column;
       align-items: center;
-      min-width: 240px;
+      min-width: 256px;
 
       &:hover {
         background: 0 0;
@@ -186,9 +190,6 @@
           }
         }
       }
-      // p {
-      //   text-align: center;
-      // }
     }
   }
 </style>

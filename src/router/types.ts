@@ -32,8 +32,9 @@ export interface Meta {
   frameSrc?: string;
   // 外链跳转地址
   externalLink?: string;
-  //隐藏
+  //隐藏目录
   hidden?: boolean;
+  //隐藏tab
   hideTab?: boolean;
 }
 

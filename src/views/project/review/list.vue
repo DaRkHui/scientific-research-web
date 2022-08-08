@@ -31,8 +31,8 @@
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <router-link to="/project/newplan">
-          <n-button type="primary" size="large">新增申报计划</n-button></router-link
+        <router-link to="/project/newReview">
+          <n-button type="primary" size="large">新增评审计划</n-button></router-link
         >
         <!-- <n-button type="primary" size="large" @click="addTable">
           <template #icon>
@@ -85,7 +85,7 @@
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList, deleteApply } from '@/api/project/list';
+  import { getReviewList, deleteApply } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
@@ -221,7 +221,7 @@
     //   console.log(ret.data.data.result);
     //   return ret.data.data;
     // });
-    return await getTableList({ ...formParams, ...params.value, ...res });
+    return await getReviewList({ ...formParams, ...params.value, ...res });
   };
 
   function onCheckedRow(rowKeys) {
@@ -263,7 +263,7 @@
   async function handleDelete(record) {
     const ids = [record.id];
 
-    let result = await reviewPlan({ ids: ids });
+    let result = await deleteApply({ ids: ids });
 
     let code = result.data.code;
 

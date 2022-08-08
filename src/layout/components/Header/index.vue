@@ -46,7 +46,11 @@
           <n-breadcrumb-item>
             <n-dropdown
               v-if="routeItem.children.length"
-              :options="routeItem.children"
+              :options="
+                routeItem.children.filter((i) => {
+                  return !i.meta.hideTab;
+                })
+              "
               @select="dropdownSelect"
             >
               <span class="link-text">
@@ -207,6 +211,7 @@
             // Recursion
             currentMenu.children = generator(item.children, currentMenu);
           }
+
           return currentMenu;
         });
       };
