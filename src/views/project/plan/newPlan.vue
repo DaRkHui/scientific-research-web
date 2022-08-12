@@ -34,18 +34,17 @@
                 placeholder="请选择项目类别"
                 :options="matterList"
                 v-model:value="formValue.type"
-                multiple
               />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
             <n-form-item label="申报开始时间" path="start_date">
-              <n-date-picker type="date" v-model:value="formValue.start_date" format="yyyy-mm-dd" />
+              <n-date-picker type="date" v-model:value="formValue.start_date" />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
             <n-form-item label="申报结束时间" path="end_date">
-              <n-date-picker type="date" v-model:value="formValue.end_date" format="yyyy-mm-dd" />
+              <n-date-picker type="date" v-model:value="formValue.end_date" />
             </n-form-item>
           </n-grid-item>
 
@@ -55,7 +54,6 @@
                 placeholder="请选择审核流程"
                 :options="approvalList"
                 v-model:value="formValue.approval_id"
-                multiple
               />
             </n-form-item>
           </n-grid-item>
@@ -65,7 +63,6 @@
                 placeholder="请选择项目级别"
                 :options="levelList"
                 v-model:value="formValue.level"
-                multiple
               />
             </n-form-item>
           </n-grid-item>
@@ -118,7 +115,7 @@
   import { BasicUpload } from '@/components/Upload';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useGlobSetting } from '@/hooks/setting';
-  import { newApply } from '@/api/project/list';
+  import { newApplyPlan } from '@/api/project/list';
   import { queryapprovermenu } from '@/api/system/user';
   import { useUserStore } from '@/store/modules/user';
   import { useRouter } from 'vue-router';
@@ -215,14 +212,14 @@
     created_user_id: userStore.userid,
     department: '',
     des: '',
-    end_date: [],
+    end_date: ref(new Date()),
     expert_approval_id: '',
     id_num: '',
     material_template_info: '',
     name: '',
     need_review: 2,
     save_status: 0,
-    start_date: [],
+    start_date: ref(new Date()),
     type: '1',
     level: '',
   });
@@ -252,7 +249,7 @@
           }
         }
         // debugger;
-        const result = await newApply(formData);
+        const result = await newApplyPlan(formData);
         // console.log(result.data.code);
         let code = result.data.code;
         // debugger

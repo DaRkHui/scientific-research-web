@@ -21,7 +21,7 @@
                 ><p class="time">{{ item.start_date }}至{{ item.end_date }}</p>
               </div>
               <div class="img-box-actions">
-                <n-button type="primary" size="large" @click="handleEdit(item.id)"
+                <n-button type="primary" size="large" @click="handleDetail(item.id)"
                   >查看申报详情</n-button
                 >
               </div>
@@ -32,7 +32,7 @@
           <n-button type="info" strong secondary disabled v-if="item.dec_status == '1'">
             已申报
           </n-button>
-          <n-button type="info" ghost v-else> 项目申报 </n-button>
+          <n-button type="info" ghost v-else @click="handleEdit(item.id)"> 项目申报 </n-button>
         </n-card>
       </div>
     </div>
@@ -63,18 +63,16 @@
 
   onMounted(async () => {
     const data = await getTableListStatus({ ...params.value });
-    // console.log('====================================');
-    // console.log(data.data.。result);
-    // console.log('====================================');
+
     cardList.value = data.data.data.result;
     total.value = data.data.data.total;
   });
-  function handleDetail(item) {
-    console.log('点击了查看', item);
-  }
 
+  function handleDetail(id) {
+    router.replace({ path: '/project/detail', query: { id:id } });
+  }
   function handleEdit(id) {
-    router.replace({ path: '/project/detail', query: { id: id } });
+    router.replace({ path: '/project/newapply', query: { id: id } });
   }
   function handleDelete(record: Recordable) {
     console.log('点击了删除', record);

@@ -22,9 +22,18 @@ export function getTableListStatus(params) {
   });
 }
 //获取申报table
-export function getApplyList(params) {
+export function getPlanTotal(params) {
   return http.request<BasicResponseModel>({
-    url: '/v1/project/apply',
+    url: '/v1/project/apply_plan/total',
+    method: 'GET',
+    params,
+  });
+}
+
+//获取评审table 数量
+export function getReviewNum(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_plan',
     method: 'GET',
     params,
   });
@@ -32,15 +41,31 @@ export function getApplyList(params) {
 //获取评审table
 export function getReviewList(params) {
   return http.request<BasicResponseModel>({
-    url: '/v1/project/review_plan',
+    url: '/v1/project/review_plan/by_name',
     method: 'GET',
     params,
   });
 }
 //新增申请计划
-export function newApply(params) {
+export function newApplyPlan(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply_plan',
+    method: 'POST',
+    params,
+  });
+}
+//新增申报
+export function newApply(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply',
+    method: 'POST',
+    params,
+  });
+}
+//新增评审计划
+export function newReviewPlan(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_plan',
     method: 'POST',
     params,
   });

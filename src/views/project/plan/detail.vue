@@ -73,7 +73,9 @@
             <n-timeline-item type="warning" title="项目中期模版.doc" />
             <n-timeline-item type="warning" title="项目结项模版.doc" />
           </n-timeline>
-          <p style="text-align: center"><n-button type="info" ghost> 项目申报 </n-button></p>
+          <p style="text-align: center">
+            <n-button type="info" ghost @click="handleEdit"> 项目申报 </n-button>
+          </p>
         </div>
       </div>
     </n-card>
@@ -95,12 +97,13 @@
   const handleBack = () => {
     router.back();
   };
+  function handleEdit() {
+    router.replace({ path: '/project/newapply', query: { id: route.query.id } });
+  }
   onMounted(async () => {
     const data = await getApplyInfo({ id: route.query.id });
     detail.value = data.data.data;
-    console.log('====================================');
-    console.log(detail);
-    console.log('====================================');
+
     // visits.value = data.visits;
     // saleroom.value = data.saleroom;
     // orderLarge.value = data.orderLarge;
@@ -141,7 +144,7 @@
       font-size: 16px;
       font-weight: bold;
       line-height: 30px;
-      color: #5C6268;
+      color: #5c6268;
     }
   }
 </style>

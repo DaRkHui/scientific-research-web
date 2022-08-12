@@ -15,6 +15,7 @@ export function usePagination(refProps: ComputedRef<BasicTableProps>) {
       return false;
     }
     const { totalField } = APISETTING;
+    // debugger
     return {
       pageSize: DEFAULTPAGESIZE,
       pageSizes: PAGESIZES,

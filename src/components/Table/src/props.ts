@@ -4,6 +4,10 @@ import { BasicColumn } from './types/table';
 import { NDataTable } from 'naive-ui';
 export const basicProps = {
   ...NDataTable.props, // 这里继承原 UI 组件的 props
+  showSetting: {
+    type: Boolean,
+    default: true,
+  },
   title: {
     type: String,
     default: null,

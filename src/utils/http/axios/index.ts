@@ -100,6 +100,7 @@ const transform: AxiosTransform = {
         break;
       // 登录超时
       case ResultEnum.TIMEOUT:
+        debugger
         const LoginName = PageEnum.BASE_LOGIN_NAME;
         const LoginPath = PageEnum.BASE_LOGIN;
         if (router.currentRoute.value?.name === LoginName) return;

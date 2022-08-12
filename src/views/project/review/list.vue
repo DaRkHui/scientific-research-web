@@ -27,7 +27,7 @@
       ref="actionRef"
       :actionColumn="actionColumn"
       @update:checked-row-keys="onCheckedRow"
-      @update:tableData="getTableData"
+      @update:pagination="getPagination"
       :scroll-x="1090"
     >
       <template #tableTitle>
@@ -49,38 +49,12 @@
       </template> -->
     </BasicTable>
 
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
-      <n-form
-        :model="formParams"
-        :rules="rules"
-        ref="formRef"
-        label-placement="left"
-        :label-width="80"
-        class="py-4"
-      >
-        <n-form-item label="名称" path="name">
-          <n-input placeholder="请输入名称" v-model:value="formParams.name" />
-        </n-form-item>
-        <n-form-item label="地址" path="address">
-          <n-input type="textarea" placeholder="请输入地址" v-model:value="formParams.address" />
-        </n-form-item>
-        <n-form-item label="日期" path="date">
-          <n-date-picker type="datetime" placeholder="请选择日期" v-model:value="formParams.date" />
-        </n-form-item>
-      </n-form>
-
-      <template #action>
-        <n-space>
-          <n-button @click="() => (showModal = false)">取消</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">确定</n-button>
-        </n-space>
-      </template>
-    </n-modal>
+    
   </n-card>
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref } from 'vue';
+  import { h, reactive, ref, toRefs, watch } from 'vue';
   import { useMessage } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
@@ -92,6 +66,11 @@
 
   import { useRouter } from 'vue-router';
 
+  const props = defineProps({
+    save_status: Number,
+  });
+
+  const { save_status } = toRefs(props);
   const rules = {
     keyword: {
       required: true,
@@ -137,7 +116,7 @@
   const showSearch = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    saveStatus: '1',
+    save_status: 1,
     keyword: '',
     type: '',
   });
@@ -159,7 +138,7 @@
         style: 'button',
         actions: [
           {
-            label: '删除',
+            label: '关闭',
             // icon: 'ic:outline-delete-outline',
             onClick: handleDelete.bind(null, record),
             // 根据业务控制是否显示 isShow 和 auth 是并且关系
@@ -178,23 +157,7 @@
             // auth: ['basic_list'],
           },
         ],
-        // dropDownActions: [
-        //   {
-        //     label: '启用',
-        //     key: 'enabled',
-        //     // 根据业务控制是否显示: 非enable状态的不显示启用按钮
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        //   {
-        //     label: '禁用',
-        //     key: 'disabled',
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        // ],
+
         select: (key) => {
           message.info(`您点击了，${key} 按钮`);
         },
@@ -221,22 +184,27 @@
     //   console.log(ret.data.data.result);
     //   return ret.data.data;
     // });
+    formParams.save_status = save_status.value;
+    // debugger;
     return await getReviewList({ ...formParams, ...params.value, ...res });
   };
 
   function onCheckedRow(rowKeys) {
     console.log(rowKeys);
   }
-  function getTableData(tableData) {
-    console.log(tableData);
-    total.value = tableData.length;
+  function getPagination(pagination) {
+    // console.log('11', pagination);
+    total.value = pagination.itemCount;
   }
 
   function reloadTable() {
     actionRef.value.reload();
     // loadDataTable();
   }
-
+  watch(save_status, () => {
+    // debugger;
+    reloadTable();
+  });
   function confirmForm(e) {
     e.preventDefault();
     formBtnLoading.value = true;
@@ -304,4 +272,5 @@
   }
 </style>
 
-function ids(ids: any[], ids: any[]) { throw new Error('Function not implemented.'); }
+function ids(ids: any[], ids: any[]) { throw new Error('Function not implemented.'); } function
+res(res: any) { throw new Error('Function not implemented.'); }

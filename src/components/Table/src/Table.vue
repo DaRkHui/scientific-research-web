@@ -18,7 +18,7 @@
       <slot name="tableTitle"></slot>
     </div>
 
-    <div class="flex items-center table-toolbar-right">
+    <div class="flex items-center table-toolbar-right" v-if="showSetting">
       <!--顶部右侧区域-->
       <slot name="toolbar"></slot>
 
@@ -151,6 +151,7 @@
       'edit-cancel',
       'edit-row-end',
       'edit-change',
+      'update:pagination',
     ],
     setup(props, { emit }) {
       const deviceHeight = ref(150);
@@ -216,8 +217,9 @@
       //组装表格信息
       const getBindValues = computed(() => {
         const tableData = unref(getDataSourceRef);
-        console.log(tableData)
+
         emit('update:tableData', tableData);
+        emit('update:pagination', getPaginationInfo.value);
         const maxHeight = tableData.length ? `${unref(deviceHeight)}px` : 'auto';
         return {
           ...unref(getProps),

@@ -13,6 +13,21 @@ export interface BasicPageParams {
 }
 
 /**
+ * @description: 获取审批人员
+ */
+export function queryuser() {
+  return http.request(
+    {
+      url: 'user/queryuser',
+      method: 'POST',
+
+    },
+    {
+      isTransformResponse: false,
+    }
+  );
+}
+/**
  * @description: 获取用户信息
  */
 export function getUserInfo(params) {

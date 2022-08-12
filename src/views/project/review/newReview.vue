@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <n-card :bordered="false" class="mt-4 proCard">
@@ -14,40 +15,20 @@
         <n-divider />
         <n-grid cols="1 s:1 m:2 l:2 xl:2 2xl:2" responsive="screen">
           <n-grid-item>
-            <n-form-item label="项目名称" path="name">
-              <n-input v-model:value="formValue.name" placeholder="输入申报计划名称" />
+            <n-form-item label="评审计划名称" path="name">
+              <n-input v-model:value="formValue.name" placeholder="输入评审计划名称" />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="申报计划名称" path="name">
-              <n-input v-model:value="formValue.name" placeholder="输入申报计划名称" />
+            <n-form-item label="选择申报计划" path="name">
+              <n-input v-model:value="formValue.name" placeholder="选择申报计划" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item>
-            <n-form-item label="项目编号" path="id_num">
-              <n-input placeholder="计划编号" v-model:value="formValue.id_num" />
-            </n-form-item>
-          </n-grid-item>
-          <n-grid-item>
-            <n-form-item label="计划编号" path="id_num">
-              <n-input placeholder="计划编号" v-model:value="formValue.id_num" />
-            </n-form-item>
-          </n-grid-item>
-          <n-grid-item>
-            <n-form-item label="负责人" path="department">
-              <n-input placeholder="项目来源单位" v-model:value="formValue.department" />
-            </n-form-item>
-          </n-grid-item>
-          <n-grid-item>
-            <n-form-item label="联系方式" path="department">
-              <n-input placeholder="项目来源单位" v-model:value="formValue.department" />
-            </n-form-item>
-          </n-grid-item>
-          <n-grid-item>
-            <n-form-item label="所属科室" path="type" required>
+            <n-form-item label="选择评审专家" path="type" required>
               <n-select
-                placeholder="请选择项目类别"
+                placeholder="请选择评审专家"
                 :options="matterList"
                 v-model:value="formValue.type"
                 multiple
@@ -55,9 +36,9 @@
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="项目类别" path="type" required>
+            <n-form-item label="选择评审方案" path="type" required>
               <n-select
-                placeholder="请选择项目类别"
+                placeholder="请选择评审方案"
                 :options="matterList"
                 v-model:value="formValue.type"
                 multiple
@@ -65,79 +46,27 @@
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="项目开始时间" path="start_date">
+            <n-form-item label="评审开始时间" path="start_date">
               <n-date-picker type="date" v-model:value="formValue.start_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
+
           <n-grid-item>
-            <n-form-item label="项目级别" path="type" required>
-              <n-select
-                placeholder="请选择项目类别"
-                :options="matterList"
-                v-model:value="formValue.type"
-                multiple
-              />
-            </n-form-item>
-          </n-grid-item>
-          <n-grid-item>
-            <n-form-item label="计划完成时间" path="end_date">
+            <n-form-item label="评审截止时间" path="end_date">
               <n-date-picker type="date" v-model:value="formValue.end_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item>
-            <n-form-item label="审核流程设置" path="approval_id" required>
-              <n-select
-                placeholder="请选择审核流程"
-                :options="approvalList"
-                v-model:value="formValue.approval_id"
-                multiple
-              />
-            </n-form-item>
-          </n-grid-item>
-          <n-grid-item>
-            <n-form-item label="项目级别" path="level" required>
-              <n-select
-                placeholder="请选择项目级别"
-                :options="levelList"
-                v-model:value="formValue.level"
-                multiple
-              />
-            </n-form-item>
-          </n-grid-item>
-          <!-- <n-grid-item>
-            <n-form-item label="是否需要专家线上评审" path="need_review" required>
-              <n-radio-group v-model:value="formValue.need_review" name="need_review">
-                <n-space>
-                  <n-radio :value="1">是</n-radio>
-                  <n-radio :value="2">否</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
-          </n-grid-item> -->
-          <!-- <n-grid-item>
-            <n-form-item label="申报限额" path="need_review">
-              <n-radio-group v-model:value="formValue.need_review" name="sex" disabled>
-                <n-space>
-                  <n-radio :value="1">是</n-radio>
-                  <n-radio :value="2">否</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
-          </n-grid-item> -->
-          <n-grid-item>
-            <n-form-item label="预计经费" path="des">
-              <n-input-number v-model:value="value">
-                <template #prefix> ￥ </template>
-              </n-input-number>
-            </n-form-item>
-          </n-grid-item>
-
-          <!-- <n-grid-item> </n-grid-item> -->
+            <n-form-item label="申报说明" path="des">
+              <n-input
+                v-model:value="formValue.des"
+                type="textarea"
+                placeholder="请输入预约备注"
+              /> </n-form-item
+          ></n-grid-item>
         </n-grid>
-        <span class="from-title">上传材料附件</span>
-        <n-divider />
-        
+
         <br />
         <div style="margin-left: 80px">
           <n-space>
@@ -157,7 +86,7 @@
   import { BasicUpload } from '@/components/Upload';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useGlobSetting } from '@/hooks/setting';
-  import { newApply } from '@/api/project/list';
+  import { newReviewPlan } from '@/api/project/list';
   import { queryapprovermenu } from '@/api/system/user';
   import { useUserStore } from '@/store/modules/user';
   import { useRouter } from 'vue-router';
@@ -291,7 +220,7 @@
           }
         }
         // debugger;
-        const result = await newApply(formData);
+        const result = await newReviewPlan(formData);
         // console.log(result.data.code);
         let code = result.data.code;
         // debugger

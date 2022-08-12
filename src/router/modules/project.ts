@@ -42,6 +42,7 @@ const routes: Array<RouteRecordRaw> = [
         //       title: '新增',
         //       hidden: true,
         //       hideTab: true,
+
         //     },
         //     component: () => import('@/views/project/plan/newPlan.vue'),
         //   },
@@ -60,11 +61,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'newplan',
         name: 'project-new',
         meta: {
-          title: '新增',
+          title: '新增计划',
           hidden: true,
           hideTab: true,
         },
         component: () => import('@/views/project/plan/newPlan.vue'),
+      },
+      {
+        path: 'newapply',
+        name: 'apply-new',
+        meta: {
+          title: '新增申报',
+          hidden: true,
+          hideTab: true,
+        },
+        component: () => import('@/views/project/apply/newApply.vue'),
       },
       {
         path: 'detail',
@@ -88,7 +99,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'newReview',
         name: 'review-new',
         meta: {
-          title: '新增',
+          title: '新增评审计划',
           hidden: true,
           hideTab: true,
         },

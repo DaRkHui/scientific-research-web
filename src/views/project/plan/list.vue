@@ -27,7 +27,7 @@
       ref="actionRef"
       :actionColumn="actionColumn"
       @update:checked-row-keys="onCheckedRow"
-      @update:tableData="getTableData"
+      @update:pagination="getPagination"
       :scroll-x="1090"
     >
       <template #tableTitle>
@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref } from 'vue';
+  import { h, reactive, ref, toRefs, watch, unref } from 'vue';
   import { useMessage } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
@@ -92,6 +92,13 @@
 
   import { useRouter } from 'vue-router';
 
+  console.log('====================================');
+  console.log(BasicTable);
+  console.log('====================================');
+  const props = defineProps<{
+    save_status: Number;
+  }>();
+  const { save_status } = toRefs(props);
   const rules = {
     keyword: {
       required: true,
@@ -137,7 +144,7 @@
   const showSearch = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    saveStatus: '1',
+    save_status: 1,
     keyword: '',
     type: '',
   });
@@ -207,7 +214,10 @@
     labelWidth: 180,
     schemas,
   });
-
+  watch(save_status, () => {
+    // debugger;
+    reloadTable();
+  });
   function addTable() {
     showModal.value = true;
     router.replace({ path: '/project/newplan' });
@@ -221,15 +231,16 @@
     //   console.log(ret.data.data.result);
     //   return ret.data.data;
     // });
+    formParams.save_status = save_status.value;
     return await getTableList({ ...formParams, ...params.value, ...res });
   };
 
   function onCheckedRow(rowKeys) {
     console.log(rowKeys);
   }
-  function getTableData(tableData) {
-    console.log(tableData);
-    total.value = tableData.length;
+  function getPagination(pagination) {
+    // console.log('11', pagination);
+    total.value = pagination.itemCount;
   }
 
   function reloadTable() {
