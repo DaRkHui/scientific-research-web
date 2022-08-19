@@ -18,7 +18,7 @@ export interface BasicPageParams {
 export function queryuser() {
   return http.request(
     {
-      url: 'user/queryuser',
+      url: '/user/queryuser',
       method: 'POST',
 
     },

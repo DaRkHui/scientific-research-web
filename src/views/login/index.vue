@@ -6,7 +6,7 @@
         <span class="view-account-top-logo">
           <img style="width: 80px" src="~@/assets/images/logo.png" alt="" />
         </span>
-        <span class="view-account-top-desc">医卫科研管理系统</span>
+        <span class="view-account-top-desc">医未科研管理系统</span>
       </div>
       <div class="view-account-form">
         <n-form

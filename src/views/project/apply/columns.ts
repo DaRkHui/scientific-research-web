@@ -9,7 +9,7 @@ export const columns = [
   },
   {
     title: '姓名',
-    key: 'name',
+    key: 'username',
     width: 100,
   },
   {
@@ -40,7 +40,7 @@ export const columns = [
   },
   {
     title: '项目分工',
-    key: 'date2',
+    key: 'dowork',
     width: 100,
   },
 ];

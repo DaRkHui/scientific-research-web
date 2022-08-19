@@ -86,67 +86,53 @@
         </n-grid>
         <span class="from-title">上传材料附件</span>
         <n-divider />
-
-        <n-form-item label="申请材料" path="des" required>
-          <n-upload
-            ref="upload"
-            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-            :default-upload="false"
-            multiple
-            @change="handleChange"
-          >
-            <n-button>选择文件</n-button>
-          </n-upload>
-        </n-form-item>
-        <n-divider />
-        <p class="from-title">项目成员</p>
-        <n-divider />
-        <BasicTable
-          :bordered="false"
-          :columns="columns"
-          :showSetting="showSetting"
-          :request="loadDataTable"
-          :row-key="(row) => row.id_num"
-          ref="actionRef"
-          :actionColumn="actionColumn"
-          @update:checked-row-keys="onCheckedRow"
-          @update:pagination="getPagination"
-          :scroll-x="1090"
+        <n-grid cols="1 s:1 m:1 l:1 xl:1 2xl:1" responsive="screen">
+          <n-grid-item>
+            <n-form-item label="申请材料" path="des" required>
+              <n-upload
+                ref="upload"
+                action="#"
+                :default-upload="false"
+                accept=".pdf"
+                multiple
+                @change="handleChange"
+              >
+                <n-button>选择文件</n-button>
+              </n-upload>
+            </n-form-item>
+          </n-grid-item></n-grid
         >
-          <template #tableTitle>
-            <n-button type="primary" size="large" @click="addTable">
-              <template #icon>
-                <n-icon>
-                  <PlusOutlined />
-                </n-icon>
-              </template>
-              添加成员
-            </n-button>
-          </template>
 
-          <!-- <template #toolbar>
-        <n-button type="primary" @click="reloadTable">刷新数据</n-button>
-      </template> -->
-        </BasicTable>
-
+        <p class="from-title">项目成员 <n-button @click="addTable"> 添加成员 </n-button></p>
+        <n-divider />
+        <n-grid cols="1 s:1 m:1 l:1 xl:1 2xl:1" responsive="screen">
+          <n-grid-item>
+            <n-data-table
+              :columns="columns"
+              :data="newMember"
+              :pagination="pagination"
+              :max-height="250"
+            />
+          </n-grid-item>
+        </n-grid>
         <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
           <n-form
             :model="formParams"
-            ref="formRef"
+            ref="memberRef"
             label-placement="left"
             :label-width="80"
             class="py-4"
           >
-            <n-form-item label="分工" path="name">
+            <n-form-item label="人员" path="name">
               <n-select
                 label-field="username"
                 value-field="userid"
-                v-model:value="formParams.name"
+                v-model:value="formParams.userid"
                 filterable
-                :options="options"
+                :options="memberList"
               />
             </n-form-item>
-            <n-form-item label="名称" path="dowork">
+            <n-form-item label="分工" path="dowork">
               <n-input placeholder="请分配人员分工" v-model:value="formParams.dowork" />
             </n-form-item>
           </n-form>
@@ -187,11 +173,12 @@
   import { useRouter, useRoute } from 'vue-router';
   import { formatToDate } from '@/utils/dateUtil.ts';
   import type { UploadInst, UploadFileInfo } from 'naive-ui';
+  import { file } from '@babel/types';
 
   const route = useRoute();
   const globSetting = useGlobSetting();
   const userStore = useUserStore();
-  const options = ref(null);
+  const memberList = ref([]);
   const matterList = [
     {
       label: '横向',
@@ -217,7 +204,9 @@
       value: 3,
     },
   ];
-
+  const pagination = {
+    pageSize: 15,
+  };
   const rules = {
     name: {
       required: true,
@@ -246,18 +235,13 @@
       message: '请选择预约时间',
       trigger: ['blur', 'change'],
     },
-    // type: {
-    //   // required: true,
-    //   type: 'number',
-    //   message: '请选择项目列别',
-    //   trigger: 'blur',
-    // },
   };
 
   const showSetting = ref(false);
   const showModal = ref(false);
   const formBtnLoading = ref(false);
   const approvalList = ref([]);
+  const newMember = ref([]);
   const levelList = [
     {
       label: '院级',
@@ -313,11 +297,11 @@
     },
   });
   const formRef: any = ref(null);
+  const memberRef: any = ref(null);
   const message = useMessage();
-  const { uploadUrl } = globSetting;
   const router = useRouter();
   const formParams = reactive({
-    name: '',
+    userid: '',
     dowork: '',
   });
   const defaultValueRef = () => ({
@@ -326,7 +310,7 @@
     created_user_id: '',
     department: '',
     end_date: ref(new Date()),
-    expenses: 0,
+    expenses: '',
     level: 0,
     material_template_info: '',
     name: '',
@@ -340,62 +324,54 @@
   });
 
   let formValue = reactive(defaultValueRef());
-  const uploadList = ref([
-    'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  ]);
-  const uploadHeaders = reactive({
-    platform: 'miniPrograms',
-    timestamp: new Date().getTime(),
-    token: 'Q6fFCuhc1vkKn5JNFWaCLf6gRAc5n0LQHd08dSnG4qo=',
-  });
 
+  const fileList = ref([] as any);
   const fileListLengthRef = ref(0);
   const uploadRef = ref<UploadInst | null>(null);
-  const loadDataTable = async () => {
-    // return await queryuser({...res });
-  };
+  const loadDataTable = async () => {};
   async function addTable() {
     const data = await queryuser();
     console.log(data);
-    options.value = data.list;
+    memberList.value = data.list;
 
     showModal.value = true;
   }
   function confirmForm(e) {
     e.preventDefault();
     formBtnLoading.value = true;
-    console.log('====================================');
-    console.log(formParams);
-    console.log('====================================');
-    // formRef.value.validate((errors) => {
-    //   if (!errors) {
-    //     message.success('新建成功');
-    //     setTimeout(() => {
-    //       showModal.value = false;
 
-    //     });
-    //   } else {
-    //     message.error('请填写完整信息');
-    //   }
-    //   formBtnLoading.value = false;
-    // });
+    let list = memberList.value.find((obj) => {
+      return obj.userid === formParams.userid;
+    });
+    console.log(list);
+    let copy = Object.assign({}, formParams, list);
+    newMember.value.push(copy);
+    showModal.value = false;
+    formBtnLoading.value = false;
   }
-  // upload: uploadRef,
-  // fileListLength: fileListLengthRef,
+
   function handleChange(options: { fileList: UploadFileInfo[] }) {
+    fileList.value = options.fileList;
     fileListLengthRef.value = options.fileList.length;
   }
-  function handleClick() {
-    uploadRef.value?.submit();
-  }
+
   function handleDelete(record) {}
   function formSubmit(status) {
+    // debugger
     formRef.value.validate(async (errors) => {
       if (!errors) {
         formValue.save_status = status;
         formValue.end_date = formatToDate(formValue.end_date);
         formValue.start_date = formatToDate(formValue.start_date);
         formValue.save_status = status;
+        formValue.users = JSON.stringify(newMember.value);
+        let arr = Array.from({ ...fileList.value, length: fileList.value.length }).map(
+          (file, index) => ({
+            file_name: file.name,
+            des: '',
+          })
+        );
+        formValue.material_template_info = JSON.stringify(arr);
         let formData = new window.FormData();
         for (const key in formValue) {
           if (Object.prototype.hasOwnProperty.call(formValue, key)) {
@@ -403,6 +379,9 @@
             formData.append(key, element);
           }
         }
+        fileList.value.forEach((file, index) => {
+          formData.append(`file${index + 1}`, file.file);
+        });
         // debugger;
         const result = await newApply(formData);
         console.log(result.data.code);
@@ -419,10 +398,6 @@
         } else {
           message.info(result.data.info);
         }
-        // const ret = result.data.data;
-        // //  arr3=arr2.filter(item=>item.id == 20)
-        // console.log('====================================');
-        // console.log(formParams);
       } else {
         message.error('验证失败，请填写完整信息');
       }
@@ -431,7 +406,6 @@
   onMounted(async () => {
     const data = await getApplyInfo({ id: route.query.id });
     let detail = data.data.data;
-    // console.log('====================================');
     console.log(detail);
     formValue.plan = detail.name;
     formValue.level = detail.level;
@@ -439,7 +413,6 @@
     formValue.expert_approval_id = detail.expert_approval_id;
     formValue.project_apply_plan_id = detail.id;
     formValue.approval_id = detail.approval_id;
-    // console.log('====================================');
   });
   function resetForm() {
     router.replace({ path: '/project/plan' });

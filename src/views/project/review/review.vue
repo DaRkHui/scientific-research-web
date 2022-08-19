@@ -59,6 +59,7 @@
     formParams.draft = ret.Draft;
     formParams.close = ret.Close;
     formParams.release = ret.Release;
+    formParams.total = result.data.data.total;
     throwTabList.value = [
       {
         name: `我的草稿`,

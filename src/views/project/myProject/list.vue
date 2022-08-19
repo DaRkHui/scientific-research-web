@@ -1,24 +1,35 @@
 <template>
   <n-card :bordered="false" class="proCard pmp">
     <template #header>
-      <span class="all"> 全部（{{ total }}）</span>
-      <span class="search"
-        ><n-button text size="large" @click="showSearchBar">
-          <template #icon>
-            <n-icon>
-              <SearchOutlined />
-            </n-icon>
+      <!-- <span class="all"> 全部（{{ total }}）</span> -->
+      <span class="all">
+        <n-tabs default-value="oasis">
+          <!-- <template #prefix> 全部（{{ total }}） </template> -->
+          <n-tab name="全部"> 全部（{{ total }}）</n-tab>
+          <n-tab name="科研处初审通过">科研处初审通过 </n-tab>
+          <n-tab name="科研处退回"> 科研处退回</n-tab>
+          <n-tab name="待审核">待审核</n-tab>
+          <template #suffix>
+            <span class="search"
+              ><n-button text size="large" @click="showSearchBar">
+                <template #icon>
+                  <n-icon>
+                    <SearchOutlined />
+                  </n-icon>
+                </template>
+                搜索
+              </n-button>
+            </span>
           </template>
-          搜索
-        </n-button>
-      </span>
+        </n-tabs></span
+      >
     </template>
     <BasicForm v-if="showSearch" @register="register" @submit="handleSubmit" @reset="handleReset">
       <template #statusSlot="{ model, field }">
         <n-input v-model:value="model[field]" />
       </template>
     </BasicForm>
-    <n-divider />
+    <!-- <n-divider /> -->
     <BasicTable
       :bordered="false"
       :columns="columns"
@@ -31,73 +42,32 @@
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <router-link to="/project/newplan">
-          <n-button type="primary" size="large">新增申报计划</n-button></router-link
-        >
-        <!-- <n-button type="primary" size="large" @click="addTable">
-          <template #icon>
-            <n-icon>
-              <PlusOutlined />
-            </n-icon>
-          </template>
-          新增申报计划
-        </n-button> -->
+        <n-tabs type="segment">
+          <n-tab-pane name="chap1" tab="我负责的项目"> </n-tab-pane>
+          <n-tab-pane name="chap2" tab="我参与的项目"> </n-tab-pane>
+        </n-tabs>
       </template>
-
-      <!-- <template #toolbar>
-        <n-button type="primary" @click="reloadTable">刷新数据</n-button>
-      </template> -->
     </BasicTable>
-
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
-      <n-form
-        :model="formParams"
-        :rules="rules"
-        ref="formRef"
-        label-placement="left"
-        :label-width="80"
-        class="py-4"
-      >
-        <n-form-item label="名称" path="name">
-          <n-input placeholder="请输入名称" v-model:value="formParams.name" />
-        </n-form-item>
-        <n-form-item label="地址" path="address">
-          <n-input type="textarea" placeholder="请输入地址" v-model:value="formParams.address" />
-        </n-form-item>
-        <n-form-item label="日期" path="date">
-          <n-date-picker type="datetime" placeholder="请选择日期" v-model:value="formParams.date" />
-        </n-form-item>
-      </n-form>
-
-      <template #action>
-        <n-space>
-          <n-button @click="() => (showModal = false)">取消</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">确定</n-button>
-        </n-space>
-      </template>
-    </n-modal>
   </n-card>
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, toRefs, watch, unref } from 'vue';
+  import { h, reactive, ref, toRefs, watch } from 'vue';
   import { useMessage } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList, deleteApply } from '@/api/project/list';
+  import { myApply, deleteApply } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
 
   import { useRouter } from 'vue-router';
 
-  console.log('====================================');
-  console.log(BasicTable);
-  console.log('====================================');
-  const props = defineProps<{
-    save_status: Number;
-  }>();
+  const props = defineProps({
+    status: Number,
+  });
+
   const { save_status } = toRefs(props);
   const rules = {
     keyword: {
@@ -166,7 +136,7 @@
         style: 'button',
         actions: [
           {
-            label: '删除',
+            label: '关闭',
             // icon: 'ic:outline-delete-outline',
             onClick: handleDelete.bind(null, record),
             // 根据业务控制是否显示 isShow 和 auth 是并且关系
@@ -185,23 +155,7 @@
             // auth: ['basic_list'],
           },
         ],
-        // dropDownActions: [
-        //   {
-        //     label: '启用',
-        //     key: 'enabled',
-        //     // 根据业务控制是否显示: 非enable状态的不显示启用按钮
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        //   {
-        //     label: '禁用',
-        //     key: 'disabled',
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        // ],
+
         select: (key) => {
           message.info(`您点击了，${key} 按钮`);
         },
@@ -214,10 +168,7 @@
     labelWidth: 180,
     schemas,
   });
-  watch(save_status, () => {
-    // debugger;
-    reloadTable();
-  });
+
   function addTable() {
     showModal.value = true;
     router.replace({ path: '/project/newplan' });
@@ -231,8 +182,9 @@
     //   console.log(ret.data.data.result);
     //   return ret.data.data;
     // });
-    formParams.save_status = save_status.value;
-    return await getTableList({ ...formParams, ...params.value, ...res });
+    formParams.status = status.value;
+    // debugger;
+    return await myApply({ ...formParams, ...params.value, ...res });
   };
 
   function onCheckedRow(rowKeys) {
@@ -247,7 +199,10 @@
     actionRef.value.reload();
     // loadDataTable();
   }
-
+  watch(status, () => {
+    // debugger;
+    reloadTable();
+  });
   function confirmForm(e) {
     e.preventDefault();
     formBtnLoading.value = true;
@@ -274,7 +229,7 @@
   async function handleDelete(record) {
     const ids = [record.id];
 
-    let result = await reviewPlan({ ids: ids });
+    let result = await deleteApply({ ids: ids });
 
     let code = result.data.code;
 
@@ -307,7 +262,7 @@
       color: #2d8cf0;
       border-bottom: 2px solid;
       line-height: 20px;
-      padding-bottom: 10px;
+      // padding-bottom: 10px;
     }
     .search {
       margin: 8px;
@@ -315,4 +270,5 @@
   }
 </style>
 
-
+function ids(ids: any[], ids: any[]) { throw new Error('Function not implemented.'); } function
+res(res: any) { throw new Error('Function not implemented.'); }

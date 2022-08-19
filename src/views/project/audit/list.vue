@@ -18,8 +18,9 @@
         <n-input v-model:value="model[field]" />
       </template>
     </BasicForm>
-    <n-divider />
+    <!-- <n-divider /> -->
     <BasicTable
+      :showSetting="false"
       :bordered="false"
       :columns="columns"
       :request="loadDataTable"
@@ -29,43 +30,27 @@
       @update:checked-row-keys="onCheckedRow"
       @update:pagination="getPagination"
       :scroll-x="1090"
-    >
-      <template #tableTitle>
-        <router-link to="/project/newplan">
-          <n-button type="primary" size="large">新增申报计划</n-button></router-link
-        >
-        <!-- <n-button type="primary" size="large" @click="addTable">
-          <template #icon>
-            <n-icon>
-              <PlusOutlined />
-            </n-icon>
-          </template>
-          新增申报计划
-        </n-button> -->
-      </template>
-
-      <!-- <template #toolbar>
-        <n-button type="primary" @click="reloadTable">刷新数据</n-button>
-      </template> -->
-    </BasicTable>
-
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
+    />
+    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="审核">
       <n-form
-        :model="formParams"
+        :model="auditForm"
         :rules="rules"
         ref="formRef"
         label-placement="left"
         :label-width="80"
         class="py-4"
       >
-        <n-form-item label="名称" path="name">
-          <n-input placeholder="请输入名称" v-model:value="formParams.name" />
+        <n-form-item label="审核结果：" path="choice">
+          <n-radio-group v-model:value="auditForm.choice" name="radiogroup">
+            <n-space>
+              <n-radio v-for="item in auditChoice" :key="item.value" :value="item.value">
+                {{ item.label }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
         </n-form-item>
-        <n-form-item label="地址" path="address">
-          <n-input type="textarea" placeholder="请输入地址" v-model:value="formParams.address" />
-        </n-form-item>
-        <n-form-item label="日期" path="date">
-          <n-date-picker type="datetime" placeholder="请选择日期" v-model:value="formParams.date" />
+        <n-form-item label="审核意见：" path="des">
+          <n-input type="textarea" placeholder="请输入意见" v-model:value="auditForm.des" />
         </n-form-item>
       </n-form>
 
@@ -80,44 +65,45 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, toRefs, watch, unref } from 'vue';
+  import { h, reactive, ref, toRefs, watch } from 'vue';
   import { useMessage } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList, deleteApply } from '@/api/project/list';
+  import { projectReview, toProjectReview } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
 
   import { useRouter } from 'vue-router';
 
-  console.log('====================================');
-  console.log(BasicTable);
-  console.log('====================================');
-  const props = defineProps<{
-    save_status: Number;
-  }>();
-  const { save_status } = toRefs(props);
+  const props = defineProps({
+    status: Number,
+  });
+
+  const { status } = toRefs(props);
   const rules = {
-    keyword: {
+    choice: {
+      required: true,
+      trigger: ['blur'],
+      message: '请选择审核结果',
+    },
+    des: {
       required: true,
       trigger: ['blur', 'input'],
-      message: '请输入检索条件',
-    },
-    address: {
-      required: true,
-      trigger: ['blur', 'input'],
-      message: '请输入地址',
-    },
-    date: {
-      type: 'number',
-      required: true,
-      trigger: ['blur', 'change'],
-      message: '请选择日期',
+      message: '请输入审批意见',
     },
   };
-
+  const auditChoice = [
+    {
+      value: '2',
+      label: '同意立项',
+    },
+    {
+      value: '3',
+      label: '不予立项',
+    },
+  ];
   const schemas: FormSchema[] = [
     {
       field: 'keyword',
@@ -143,8 +129,14 @@
   const showModal = ref(false);
   const showSearch = ref(false);
   const formBtnLoading = ref(false);
+  const auditForm = reactive({
+    b_type: '1',
+    choice: '',
+    id: '',
+    des: '',
+    x_type: 2,
+  });
   const formParams = reactive({
-    save_status: 1,
     keyword: '',
     type: '',
   });
@@ -166,9 +158,9 @@
         style: 'button',
         actions: [
           {
-            label: '删除',
+            label: '查看',
             // icon: 'ic:outline-delete-outline',
-            onClick: handleDelete.bind(null, record),
+            onClick: handleEdit.bind(null, record),
             // 根据业务控制是否显示 isShow 和 auth 是并且关系
             ifShow: () => {
               return true;
@@ -177,31 +169,15 @@
             // auth: ['basic_list'],
           },
           {
-            label: '预览',
-            onClick: handleEdit.bind(null, record),
+            label: '审核',
+            onClick: handleSelect.bind(null, record),
             ifShow: () => {
               return true;
             },
             // auth: ['basic_list'],
           },
         ],
-        // dropDownActions: [
-        //   {
-        //     label: '启用',
-        //     key: 'enabled',
-        //     // 根据业务控制是否显示: 非enable状态的不显示启用按钮
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        //   {
-        //     label: '禁用',
-        //     key: 'disabled',
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        // ],
+
         select: (key) => {
           message.info(`您点击了，${key} 按钮`);
         },
@@ -214,14 +190,11 @@
     labelWidth: 180,
     schemas,
   });
-  watch(save_status, () => {
-    // debugger;
-    reloadTable();
-  });
-  function addTable() {
-    showModal.value = true;
-    router.replace({ path: '/project/newplan' });
-  }
+
+  // function addTable() {
+  //   showModal.value = true;
+  //   // router.replace({ path: '/project/newplan' });
+  // }
   function showSearchBar() {
     showSearch.value = !showSearch.value;
   }
@@ -231,8 +204,9 @@
     //   console.log(ret.data.data.result);
     //   return ret.data.data;
     // });
-    formParams.save_status = save_status.value;
-    return await getTableList({ ...formParams, ...params.value, ...res });
+    formParams.status = status.value;
+
+    return await projectReview({ ...formParams, ...params.value, ...res });
   };
 
   function onCheckedRow(rowKeys) {
@@ -247,13 +221,32 @@
     actionRef.value.reload();
     // loadDataTable();
   }
-
+  watch(status, () => {
+    // debugger;
+    reloadTable();
+  });
   function confirmForm(e) {
     e.preventDefault();
     formBtnLoading.value = true;
-    formRef.value.validate((errors) => {
+    formRef.value.validate(async (errors) => {
       if (!errors) {
-        message.success('新建成功');
+        let formData = new window.FormData();
+        for (const key in auditForm) {
+          if (Object.prototype.hasOwnProperty.call(auditForm, key)) {
+            const element = auditForm[key];
+            formData.append(key, element);
+          }
+        }
+        let result = await toProjectReview(formData);
+
+        let code = result.data.code;
+
+        if (code == BaseResultEnum.SUCCESS) {
+          message.success('操作成功');
+        } else {
+          message.info(result.data.info);
+        }
+
         setTimeout(() => {
           showModal.value = false;
           reloadTable();
@@ -266,25 +259,15 @@
   }
 
   function handleEdit(record: Recordable) {
-    router.replace({ path: '/project/detail', query: { id: record.id } });
+    router.replace({ path: '/project/auditDetail', query: { id: record.id } });
     // console.log('点击了编辑', record);
     // router.push({ name: 'basic-info', params: { id: record.id } });
   }
 
-  async function handleDelete(record) {
-    const ids = [record.id];
-
-    let result = await reviewPlan({ ids: ids });
-
-    let code = result.data.code;
-
-    if (code == BaseResultEnum.SUCCESS) {
-      message.success('删除成功');
-    } else {
-      message.info(result.data.info);
-    }
-
-    reloadTable();
+  function handleSelect(record) {
+    showModal.value = true;
+    auditForm.id = record.id_num;
+    auditForm.x_type = Number(record.status) + 2;
   }
 
   function handleSubmit(values: Recordable) {
@@ -314,5 +297,3 @@
     }
   }
 </style>
-
-

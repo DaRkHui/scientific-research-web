@@ -28,6 +28,27 @@ const routes: Array<RouteRecordRaw> = [
 
     children: [
       {
+        path: 'myProject',
+        name: 'project-my',
+        meta: {
+          title: '我的项目',
+        },
+        component: () => import('@/views/project/myProject/myProject.vue'),
+        // children: [
+        //   {
+        //     path: 'newplan',
+        //     name: 'project-new',
+        //     meta: {
+        //       title: '新增',
+        //       hidden: true,
+        //       hideTab: true,
+
+        //     },
+        //     component: () => import('@/views/project/plan/newPlan.vue'),
+        //   },
+        // ],
+      },
+      {
         path: 'plan',
         name: 'project-plan',
         meta: {
@@ -87,6 +108,26 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/project/plan/detail.vue'),
       },
+
+      {
+        path: 'audit',
+        name: 'project-audit',
+        meta: {
+          title: '项目审核',
+        },
+        component: () => import('@/views/project/audit/audit.vue'),
+      },
+      {
+        path: 'auditDetail',
+        name: 'audit-detail',
+        meta: {
+          title: '项目审核详情',
+          hidden: true,
+          hideTab: true,
+        },
+        component: () => import('@/views/project/audit/detail.vue'),
+      },
+
       {
         path: 'review',
         name: 'project-review',

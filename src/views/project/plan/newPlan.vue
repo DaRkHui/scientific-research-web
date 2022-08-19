@@ -92,10 +92,34 @@
             </n-form-item>
           </n-grid-item>
 
-          <!-- <n-grid-item> </n-grid-item> -->
+          <n-grid-item />
         </n-grid>
         <span class="from-title">材料附件模板</span>
         <n-divider />
+        <n-grid cols="1 s:1 m:1 l:1 xl:1 2xl:1" responsive="screen">
+          <n-grid-item>
+            <n-form-item label="申报材料" path="des" required>
+              <n-upload
+                ref="upload"
+                action="#"
+                :default-upload="false"
+                multiple
+                @change="handleChange"
+              >
+                <n-button>选择文件</n-button>
+              </n-upload>
+            </n-form-item>
+          </n-grid-item>
+          <n-grid-item>
+            <n-form-item label="申报材料使用要求" path="des_material">
+              <n-input
+                v-model:value="formValue.des_material"
+                type="textarea"
+                placeholder="请输入申报材料使用要求"
+              />
+            </n-form-item>
+          </n-grid-item>
+        </n-grid>
         <br />
         <div style="margin-left: 80px">
           <n-space>
@@ -176,12 +200,6 @@
       message: '请选择预约时间',
       trigger: ['blur', 'change'],
     },
-    // type: {
-    //   // required: true,
-    //   type: 'number',
-    //   message: '请选择项目列别',
-    //   trigger: 'blur',
-    // },
   };
   const approvalList = ref([]);
   const levelList = [
@@ -202,6 +220,9 @@
       value: 1,
     },
   ];
+  const fileList = ref([] as any);
+  const fileListLengthRef = ref(0);
+  const uploadRef = ref<UploadInst | null>(null);
   const formRef: any = ref(null);
   const message = useMessage();
   const { uploadUrl } = globSetting;
@@ -222,18 +243,15 @@
     start_date: ref(new Date()),
     type: '1',
     level: '',
+    des_material: '',
   });
 
   let formValue = reactive(defaultValueRef());
-  const uploadList = ref([
-    'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  ]);
-  const uploadHeaders = reactive({
-    platform: 'miniPrograms',
-    timestamp: new Date().getTime(),
-    token: 'Q6fFCuhc1vkKn5JNFWaCLf6gRAc5n0LQHd08dSnG4qo=',
-  });
 
+  function handleChange(options: { fileList: UploadFileInfo[] }) {
+    fileList.value = options.fileList;
+    fileListLengthRef.value = options.fileList.length;
+  }
   function formSubmit(status) {
     formRef.value.validate(async (errors) => {
       if (!errors) {
@@ -241,6 +259,13 @@
         formValue.end_date = formatToDate(formValue.end_date);
         formValue.start_date = formatToDate(formValue.start_date);
         formValue.save_status = status;
+        let arr = Array.from({ ...fileList.value, length: fileList.value.length }).map(
+          (file, index) => ({
+            file_name: file.name,
+            des: '',
+          })
+        );
+        formValue.material_template_info = JSON.stringify(arr);
         let formData = new window.FormData();
         for (const key in formValue) {
           if (Object.prototype.hasOwnProperty.call(formValue, key)) {
@@ -248,6 +273,9 @@
             formData.append(key, element);
           }
         }
+        fileList.value.forEach((file, index) => {
+          formData.append(`file${index + 1}`, file.file);
+        });
         // debugger;
         const result = await newApplyPlan(formData);
         // console.log(result.data.code);

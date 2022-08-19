@@ -3,7 +3,7 @@
     <n-grid :x-gap="24">
       <n-grid-item span="4">
         <n-card :bordered="false" size="small" class="proCard">
-          <span class="proCard-title">申报计划（{{ ret.total }}）</span>
+          <span class="proCard-title">我的项目（{{ formParams.total }}）</span>
           <n-thing
             class="thing-cell"
             v-for="item in typeTabList"
@@ -30,7 +30,7 @@
       </n-grid-item>
       <n-grid-item span="20">
         <n-card :bordered="false" size="small" class="proCard">
-          <List :save_status="type" :total="ret.total" />
+          <List :status="type" />
           <!-- <SafetySetting v-if="type === 2" /> -->
         </n-card>
       </n-grid-item>
@@ -39,48 +39,68 @@
 </template>
 <script lang="ts" setup>
   import { h, reactive, ref, onMounted, onBeforeMount, onUpdated } from 'vue';
-  import { getPlanTotal } from '@/api/project/list';
+  import { myApplyTotal } from '@/api/project/list';
   import BasicSetting from './BasicSetting.vue';
   import SafetySetting from './SafetySetting.vue';
   import List from './list.vue';
   const formParams = reactive({
-    total: 1,
-    release: 1,
-    close: 1,
-    draft: 1,
+    Change: 0,
+    ClosingItem: 0,
+    Declare: 5,
+    Draft: 0,
+    IntermediateInspection: 0,
+    ProjectInitiation: 0,
+    total: 0,
   });
   const typeTabList = ref([{}]);
   const throwTabList = ref([{}]);
-  const type = ref(1);
-  const ret = ref({});
+  const type = ref(0);
   const typeTitle = ref('已发布');
   onMounted(async () => {
-    const result = await getPlanTotal();
-    ret.value = result.data.data;
-    formParams.draft = ret.value.result.Draft;
-    formParams.close = ret.value.result.Close;
-    formParams.release = ret.value.result.Release;
-    formParams.total = ret.value.total;
+    const result = await myApplyTotal();
+    const ret = result.data.data.result;
+    formParams.Change = ret.Change;
+    formParams.ClosingItem = ret.ClosingItem;
+    formParams.Declare = ret.Declare;
+    formParams.Draft = ret.Draft;
+    formParams.IntermediateInspection = ret.IntermediateInspection;
+    formParams.ProjectInitiation = ret.ProjectInitiation;
+    formParams.total = result.data.data.total;
     throwTabList.value = [
       {
         name: `我的草稿`,
-        desc: formParams.draft,
-        key: 0,
+        desc: formParams.Draft,
+        key: 5,
       },
     ];
     typeTabList.value = [
       {
-        name: '已发布',
-        desc: formParams.release,
+        name: '项目申报',
+        desc: formParams.Declare,
+        key: 0,
+      },
+      {
+        name: '项目立项',
+        desc: formParams.ProjectInitiation,
         key: 1,
       },
       {
-        name: '已关闭',
-        desc: formParams.close,
+        name: '项目变更',
+        desc: formParams.Change,
         key: 2,
       },
+      {
+        name: '项目中检',
+        desc: formParams.IntermediateInspection,
+        key: 3,
+      },
+      {
+        name: '项目结项',
+        desc: formParams.ClosingItem,
+        key: 4,
+      },
     ];
-    console.log(formParams);
+   
     // // console.log('====================================');
   });
 

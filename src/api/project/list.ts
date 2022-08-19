@@ -95,3 +95,68 @@ export function deleteApply(params) {
     params,
   });
 }
+//项目审核列表
+export function projectReview(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/project_review',
+    method: 'GET',
+    params,
+  });
+}
+//项目审核列表-数量
+export function projectReviewTotal(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/project_review/total',
+    method: 'GET',
+    params,
+  });
+}
+//项目审核详情-详情
+export function projectReviewDetail(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/project_review/review_info',
+    method: 'GET',
+    params,
+  });
+}
+//项目审核详情-人员表格
+export function projectReviewStaff(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/project_review/info_staff',
+    method: 'GET',
+    params,
+  });
+}
+//项目审核详情-申报材料
+export function projectReviewInfo(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/project_review/info',
+    method: 'GET',
+    params,
+  });
+}
+//项目审核列表-审核
+export function toProjectReview(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/project_review',
+    method: 'PUT',
+    params,
+  });
+}
+//我的项目-项目申报列表
+export function myApply(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply',
+    method: 'GET',
+    params,
+  });
+}
+
+//我的项目-项目申报数量
+export function myApplyTotal(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply/total',
+    method: 'GET',
+    params,
+  });
+}
