@@ -30,7 +30,7 @@
       </n-grid-item>
       <n-grid-item span="20">
         <n-card :bordered="false" size="small" class="proCard">
-          <List :status="type" />
+          <List :status="type" :total="num" />
           <!-- <SafetySetting v-if="type === 2" /> -->
         </n-card>
       </n-grid-item>
@@ -55,6 +55,7 @@
   const typeTabList = ref([{}]);
   const throwTabList = ref([{}]);
   const type = ref(0);
+  const num = ref(0);
   const typeTitle = ref('已发布');
   onMounted(async () => {
     const result = await myApplyTotal();
@@ -100,12 +101,15 @@
         key: 4,
       },
     ];
-   
-    // // console.log('====================================');
+    switchType(typeTabList.value[0]);
   });
 
   function switchType(e) {
+    console.log('====================================');
+    console.log(e);
+    console.log('====================================');
     type.value = e.key;
+    num.value = e.desc;
     // typeTitle.value = e.name;
   }
   const getTotalData = {};

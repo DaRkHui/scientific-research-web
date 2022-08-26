@@ -85,21 +85,19 @@
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getTableList, deleteApply } from '@/api/project/list';
+  import { getTableList, deleteApply, closePlan } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
 
   import { useRouter } from 'vue-router';
 
-  console.log('====================================');
-  console.log(BasicTable);
-  console.log('====================================');
   const props = defineProps<{
+    // eslint-disable-next-line vue/prop-name-casing
     save_status: Number;
   }>();
   const { save_status } = toRefs(props);
-  const rules = {
+  const rules: any = {
     keyword: {
       required: true,
       trigger: ['blur', 'input'],
@@ -134,7 +132,7 @@
       rules: [{ required: true, message: '请输入检索条件', trigger: ['blur'] }],
     },
   ];
-
+  const ctx = defineEmits(['getTotal']);
   const router = useRouter();
   const formRef: any = ref(null);
   const message = useMessage();
@@ -165,43 +163,71 @@
       return h(TableAction as any, {
         style: 'button',
         actions: [
-          {
-            label: '删除',
-            // icon: 'ic:outline-delete-outline',
-            onClick: handleDelete.bind(null, record),
-            // 根据业务控制是否显示 isShow 和 auth 是并且关系
-            ifShow: () => {
-              return true;
+          [
+            {
+              label: '编辑',
+
+              onClick: handleDetail.bind(null, record),
+
+              ifShow: () => {
+                return true;
+              },
             },
-            // 根据权限控制是否显示: 有权限，会显示，支持多个
-            // auth: ['basic_list'],
-          },
-          {
-            label: '预览',
-            onClick: handleEdit.bind(null, record),
-            ifShow: () => {
-              return true;
+            // {
+            //   label: '发布',
+            //   onClick: handleEdit.bind(null, record),
+            //   ifShow: () => {
+            //     return true;
+            //   },
+            // },
+            {
+              label: '删除',
+
+              onClick: handleDelete.bind(null, record),
+
+              ifShow: () => {
+                return true;
+              },
             },
-            // auth: ['basic_list'],
-          },
-        ],
-        // dropDownActions: [
-        //   {
-        //     label: '启用',
-        //     key: 'enabled',
-        //     // 根据业务控制是否显示: 非enable状态的不显示启用按钮
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        //   {
-        //     label: '禁用',
-        //     key: 'disabled',
-        //     ifShow: () => {
-        //       return true;
-        //     },
-        //   },
-        // ],
+          ],
+          [
+            {
+              label: '预览',
+              onClick: handleEdit.bind(null, record),
+              ifShow: () => {
+                return true;
+              },
+            },
+            {
+              label: '关闭',
+
+              onClick: handleClose.bind(null, record),
+
+              ifShow: () => {
+                return true;
+              },
+            },
+          ],
+          [
+            {
+              label: '预览',
+              onClick: handleEdit.bind(null, record),
+              ifShow: () => {
+                return true;
+              },
+            },
+            {
+              label: '删除',
+
+              onClick: handleDelete.bind(null, record),
+
+              ifShow: () => {
+                return true;
+              },
+            },
+          ],
+        ][save_status.value],
+
         select: (key) => {
           message.info(`您点击了，${key} 按钮`);
         },
@@ -227,10 +253,6 @@
   }
 
   const loadDataTable = async (res) => {
-    // await getTableList({ ...formParams, ...params.value, ...res }).then((ret) => {
-    //   console.log(ret.data.data.result);
-    //   return ret.data.data;
-    // });
     formParams.save_status = save_status.value;
     return await getTableList({ ...formParams, ...params.value, ...res });
   };
@@ -267,14 +289,30 @@
 
   function handleEdit(record: Recordable) {
     router.replace({ path: '/project/detail', query: { id: record.id } });
-    // console.log('点击了编辑', record);
-    // router.push({ name: 'basic-info', params: { id: record.id } });
+  }
+  function handleDetail(record: Recordable) {
+    router.replace({ path: '/project/newplan', query: { id: record.id } });
   }
 
+  async function handleClose(record) {
+    const ids = [record.id];
+    let result = await closePlan({ ids: ids });
+
+    let code = result.data.code;
+
+    if (code == BaseResultEnum.SUCCESS) {
+      message.success('关闭成功');
+    } else {
+      message.info(result.data.info);
+    }
+
+    ctx('getTotal');
+    reloadTable();
+  }
   async function handleDelete(record) {
     const ids = [record.id];
 
-    let result = await reviewPlan({ ids: ids });
+    let result = await deleteApply({ ids: ids });
 
     let code = result.data.code;
 
@@ -283,7 +321,7 @@
     } else {
       message.info(result.data.info);
     }
-
+    ctx('getTotal');
     reloadTable();
   }
 
@@ -314,5 +352,3 @@
     }
   }
 </style>
-
-

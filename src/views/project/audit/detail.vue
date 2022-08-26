@@ -47,31 +47,26 @@
           </n-descriptions>
 
           <span class="from-title">项目成员</span>
-          <!-- <n-data-table
-            :columns="columns"
-            :data="data"
-            :pagination="pagination"
-            :row-key="rowKey"
-          /> -->
+          <n-divider />
+          <n-data-table :columns="columns" :data="memberList" :pagination="pagination" />
         </div>
         <div class="side">
           <p class="title">申报材料</p>
-          <span
-            >申报材料使用要求申报材料使用要求申报材料使材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求。</span
-          >
-          <n-thing
-            class="thing-cell"
-            v-for="item in typeTabList"
-            :key="item.file_path"
-            :class="{ 'thing-cell-on': type === item.file_path }"
-            @click="switchType(item)"
-          >
-            <template #header
-              >{{ item.file_name
-              }}<span style="icon"
-                ><CloudDownloadOutlined style="width: 16px; display: inline-block" /></span
-            ></template>
-          </n-thing>
+          <div v-if="typeTabList.length">
+            <n-thing
+              class="thing-cell"
+              v-for="item in typeTabList"
+              :key="item.file_path"
+              @click="switchType(item)"
+            >
+              <template #header
+                >{{ item.file_name
+                }}<span style="icon"
+                  ><CloudDownloadOutlined style="width: 16px; display: inline-block" /></span
+              ></template>
+            </n-thing>
+          </div>
+          <div v-else>暂未上传申报材料</div>
         </div>
       </div>
     </n-card>
@@ -81,11 +76,55 @@
 <script lang="ts" setup>
   import { h, reactive, ref, onMounted } from 'vue';
   import { useMessage } from 'naive-ui';
+
   import { CloudDownloadOutlined } from '@vicons/antd';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useRouter, useRoute } from 'vue-router';
   import { projectReviewDetail, projectReviewInfo, projectReviewStaff } from '@/api/project/list';
   import { levelFilters, typeFilters } from '@/utils/filters.ts';
+  const columns = [
+    {
+      title: '序号',
+      key: 'index',
+      width: 100,
+    },
+    {
+      title: '姓名',
+      key: 'user_name',
+      width: 100,
+    },
+    {
+      title: '性别',
+      key: 'sex',
+      width: 100,
+    },
+    {
+      title: '工作单位',
+      key: 'start_date',
+      width: 160,
+    },
+    {
+      title: '出生日期',
+      key: 'birthday',
+      width: 160,
+    },
+
+    {
+      title: '行政职务',
+      key: 'date',
+      width: 100,
+    },
+    {
+      title: '职称',
+      key: 'title',
+      width: 100,
+    },
+    {
+      title: '项目分工',
+      key: 'do_work',
+      width: 100,
+    },
+  ];
   const message = useMessage();
   const router = useRouter();
   const route = useRoute();
@@ -94,16 +133,24 @@
   const handleBack = () => {
     router.back();
   };
+  const memberList = ref<any>([]);
   const typeTabList = ref([{}]);
+  const pagination = {
+    pageSize: 5,
+  };
   function handleEdit() {
     router.replace({ path: '/project/newapply', query: { id: route.query.id } });
   }
+
   onMounted(async () => {
     const data = await projectReviewDetail({ id: route.query.id });
     detail.value = data.data.data.result;
     const ret = await projectReviewInfo({ id: route.query.id });
     // debugger;
     typeTabList.value = ret.data.data.result;
+    const list = await projectReviewStaff({ id: route.query.id });
+    // debugger;
+    memberList.value = list.data.data.result;
 
     // visits.value = data.visits;
     // saleroom.value = data.saleroom;
@@ -112,7 +159,7 @@
     // loading.value = false;
   });
   function switchType(e) {
-    window.location.href = e.file_path;
+    window.location.href = '/download/' + e.file_path;
   }
 </script>
 
@@ -142,7 +189,9 @@
     width: 20%;
     height: 600px;
     padding: 20px;
+    margin-left: 20px;
     color: #999999;
+    text-align: center;
     .title {
       text-align: center;
       font-size: 16px;
@@ -158,7 +207,7 @@
         width: 16px;
       }
       &:hover {
-        background: #f3f3f3;
+        background: #f0faff;
         color: #2d8cf0;
         border-left: 2px solid;
         cursor: pointer;

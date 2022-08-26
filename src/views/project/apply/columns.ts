@@ -4,7 +4,7 @@ import { NAvatar, NTag } from 'naive-ui';
 export const columns = [
   {
     title: '序号',
-    key: 'id_num',
+    key: 'index',
     width: 100,
   },
   {
@@ -24,7 +24,7 @@ export const columns = [
   },
   {
     title: '出生日期',
-    key: 'end_date',
+    key: 'birthday',
     width: 160,
   },
 
@@ -40,7 +40,7 @@ export const columns = [
   },
   {
     title: '项目分工',
-    key: 'dowork',
+    key: 'do_work',
     width: 100,
   },
 ];

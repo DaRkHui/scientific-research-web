@@ -30,7 +30,7 @@
       </n-grid-item>
       <n-grid-item span="20">
         <n-card :bordered="false" size="small" class="proCard">
-          <List :save_status="type" :total="ret.total" />
+          <List :save_status="type" :total="ret.total" @getTotal="getAllPlanTotal" />
           <!-- <SafetySetting v-if="type === 2" /> -->
         </n-card>
       </n-grid-item>
@@ -54,7 +54,7 @@
   const type = ref(1);
   const ret = ref({});
   const typeTitle = ref('已发布');
-  onMounted(async () => {
+  async function getAllPlanTotal() {
     const result = await getPlanTotal();
     ret.value = result.data.data;
     formParams.draft = ret.value.result.Draft;
@@ -81,7 +81,9 @@
       },
     ];
     console.log(formParams);
-    // // console.log('====================================');
+  }
+  onMounted(() => {
+    getAllPlanTotal();
   });
 
   function switchType(e) {

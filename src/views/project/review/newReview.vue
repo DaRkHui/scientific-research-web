@@ -45,14 +45,14 @@
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="评审开始时间" path="start_date">
-              <n-date-picker type="date" v-model:value="formValue.start_date" format="yyyy-mm-dd" />
+            <n-form-item label="评审开始时间">
+              <n-date-picker type="date" v-model:value="start_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
 
           <n-grid-item>
-            <n-form-item label="评审截止时间" path="end_date">
-              <n-date-picker type="date" v-model:value="formValue.end_date" format="yyyy-mm-dd" />
+            <n-form-item label="评审截止时间">
+              <n-date-picker type="date" v-model:value="end_date" format="yyyy-mm-dd" />
             </n-form-item>
           </n-grid-item>
 
@@ -90,6 +90,8 @@
   import { useUserStore } from '@/store/modules/user';
   import { useRouter } from 'vue-router';
   import { formatToDate } from '@/utils/dateUtil.ts';
+  import { useTabsViewStore } from '@/store/modules/tabsView';
+  const tabsViewStore = useTabsViewStore();
   const globSetting = useGlobSetting();
   const userStore = useUserStore();
   const matterList = [
@@ -176,20 +178,21 @@
   const message = useMessage();
   const { uploadUrl } = globSetting;
   const router = useRouter();
-  // debugger;
+  const start_date = ref(null);
+  const end_date = ref(null);
   const defaultValueRef = () => ({
     approval_id: '',
     created_user_id: userStore.userid,
     department: '',
     des: '',
-    end_date: ref(new Date()),
+    end_date: ref(null),
     expert_approval_id: '',
     id_num: '',
     material_template_info: '',
     name: '',
     need_review: 2,
     save_status: 0,
-    start_date: ref(new Date()),
+    start_date: ref(null),
     type: '1',
     level: '',
   });
@@ -208,8 +211,8 @@
     formRef.value.validate(async (errors) => {
       if (!errors) {
         formValue.save_status = status;
-        formValue.end_date = formatToDate(formValue.end_date);
-        formValue.start_date = formatToDate(formValue.start_date);
+        formValue.end_date = formatToDate(end_date.value);
+        formValue.start_date = formatToDate(start_date.value);
         formValue.save_status = status;
         let formData = new window.FormData();
         for (const key in formValue) {
@@ -229,7 +232,8 @@
           } else {
             message.success('保存草稿成功');
           }
-          router.replace({ path: '/project/plan' });
+          router.replace({ path: 'project/myProject' });
+          tabsViewStore.closeCurrentTab(route);
           // debugger
         } else {
           message.info(result.data.info);

@@ -31,6 +31,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'myProject',
         name: 'project-my',
         meta: {
+          id: '306000002',
           title: '我的项目',
         },
         component: () => import('@/views/project/myProject/myProject.vue'),
@@ -52,6 +53,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'plan',
         name: 'project-plan',
         meta: {
+          id: '306000003',
           title: '申报计划',
         },
         component: () => import('@/views/project/plan/plan.vue'),
@@ -73,6 +75,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'apply',
         name: 'project-apply',
         meta: {
+          id: '306000001',
           title: '项目申报',
         },
         component: () => import('@/views/project/apply/list.vue'),
@@ -113,6 +116,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'audit',
         name: 'project-audit',
         meta: {
+          id: '306000004',
           title: '项目审核',
         },
         component: () => import('@/views/project/audit/audit.vue'),
@@ -132,6 +136,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'review',
         name: 'project-review',
         meta: {
+          id: '306000009',
           title: '评审计划',
         },
         component: () => import('@/views/project/review/review.vue'),

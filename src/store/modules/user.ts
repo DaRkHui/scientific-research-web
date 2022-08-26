@@ -7,6 +7,7 @@ import { ResultEnum } from '@/enums/httpEnum';
 const Storage = createStorage({ storage: localStorage });
 import { getUserInfo, login } from '@/api/system/user';
 import { storage } from '@/utils/Storage';
+import { useTabsViewStore } from './tabsView';
 
 export interface IUserState {
   token: string;
@@ -23,7 +24,7 @@ export const useUserStore = defineStore({
   state: (): IUserState => ({
     token: Storage.get(ACCESS_TOKEN, ''),
     userid: '',
-    username: '',
+    username: Storage.get(CURRENT_USER, {}).username,
     welcome: '',
     avatar: '',
     permissions: [],
@@ -107,15 +108,23 @@ export const useUserStore = defineStore({
           .then((res) => {
             const { list } = res;
             // debugger;
-            if (list.groupid) {
+            if (list && list.groupid) {
               const permissionsList = list.groupid.split(',');
               that.setPermissions(permissionsList);
+
               that.setUserInfo(list);
             } else {
+              this.setPermissions([]);
+              this.setUserInfo('');
+              useTabsViewStore().closeAllTabs();
+              storage.remove(ACCESS_TOKEN);
+              storage.remove(CURRENT_USER);
               reject(new Error('getInfo: permissionsList must be a non-null array !'));
+
             }
             // that.setAvatar(result.avatar);
             resolve(res);
+
           })
           .catch((error) => {
             reject(error);
@@ -127,8 +136,10 @@ export const useUserStore = defineStore({
     async logout() {
       this.setPermissions([]);
       this.setUserInfo('');
+      useTabsViewStore().closeAllTabs();
       storage.remove(ACCESS_TOKEN);
       storage.remove(CURRENT_USER);
+      useTabsViewStore().closeAllTabs();
       return Promise.resolve('');
     },
   },
@@ -138,3 +149,7 @@ export const useUserStore = defineStore({
 export function useUserStoreWidthOut() {
   return useUserStore(store);
 }
+function logout() {
+  throw new Error('Function not implemented.');
+}
+

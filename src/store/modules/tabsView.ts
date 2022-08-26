@@ -38,7 +38,10 @@ export const useTabsViewStore = defineStore({
       // 添加标签页
       if (whiteList.includes(route.name)) return false;
       const isExists = this.tabsList.some((item) => item.fullPath == route.fullPath);
-      if (!isExists) {
+      if (!isExists) { 
+        console.log('====================================');
+        console.log(route);
+        console.log('====================================');
         this.tabsList.push(route);
       }
       return true;
@@ -58,13 +61,14 @@ export const useTabsViewStore = defineStore({
       this.tabsList = this.tabsList.filter((item) => item.fullPath == route.fullPath || (item?.meta?.affix ?? false));
     },
     closeCurrentTab(route) {
+      // debugger
       // 关闭当前页
       const index = this.tabsList.findIndex((item) => item.fullPath == route.fullPath);
       this.tabsList.splice(index, 1);
     },
     closeAllTabs() {
       // 关闭全部
-      console.log(retainAffixRoute(this.tabsList));
+      // console.log(retainAffixRoute(this.tabsList));
       this.tabsList = retainAffixRoute(this.tabsList);
     },
   },

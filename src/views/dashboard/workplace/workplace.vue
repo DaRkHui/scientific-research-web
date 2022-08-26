@@ -9,7 +9,7 @@
                 <n-avatar circle :size="64" :src="schoolboy" />
               </div>
               <div>
-                <p class="px-4 text-xl">早安，Ah jung，开始您一天的工作吧！</p>
+                <p class="px-4 text-xl">下午好，{{ username }}，开始您一天的工作吧！</p>
                 <p class="px-4 text-gray-400">今日阴转大雨，15℃ - 25℃，出门记得带伞哦。</p>
               </div>
             </div>
@@ -42,7 +42,7 @@
           size="small"
           title="项目"
         >
-          <div class="flex flex-wrap project-card">
+          <!-- <div class="flex flex-wrap project-card">
             <n-card
               size="small"
               class="cursor-pointer project-card-item ms:w-1/2 md:w-1/3"
@@ -141,7 +141,7 @@
               <div class="flex mt-2 h-10 text-gray-400"> 路是走出来的，而不是空想出来的。 </div>
               <div class="flex mt-2 h-10 text-gray-400"> 架构组 2021-07-04 </div>
             </n-card>
-          </div>
+          </div> -->
         </n-card>
 
         <n-card
@@ -194,16 +194,16 @@
                 >
               </n-thing>
             </n-list-item>
-            <n-list-item>
+            <!-- <n-list-item>
               <template #prefix>
                 <n-avatar circle :size="40" :src="schoolboy" />
-              </template>
-              <n-thing title="上班不摸鱼，和咸鱼有什么区别（这话真不是我说的哈）！">
+              </template> -->
+              <!-- <n-thing title="上班不摸鱼，和咸鱼有什么区别（这话真不是我说的哈）！">
                 <template #description
                   ><p class="text-xs text-gray-500">2021-07-04 20:37:16</p></template
                 >
               </n-thing>
-            </n-list-item>
+            </n-list-item> -->
             <n-list-item>
               <template #prefix>
                 <n-avatar circle :size="40" :src="schoolboy" />
@@ -310,6 +310,9 @@
     Html5Outlined,
   } from '@vicons/antd';
   import { LogoVue, LogoAngular, LogoReact, LogoJavascript } from '@vicons/ionicons5';
+  import { useUserStore } from '@/store/modules/user';
+  const userStore = useUserStore();
+  const username = userStore?.username || {};
 </script>
 
 <style lang="less" scoped>

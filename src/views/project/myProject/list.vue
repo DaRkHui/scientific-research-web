@@ -1,14 +1,13 @@
 <template>
   <n-card :bordered="false" class="proCard pmp">
     <template #header>
-      <!-- <span class="all"> 全部（{{ total }}）</span> -->
-      <span class="all">
-        <n-tabs default-value="oasis">
+      <span class="all" v-if="status !== 5">
+        <n-tabs default-value="0" @update:value="handleclickPr">
           <!-- <template #prefix> 全部（{{ total }}） </template> -->
-          <n-tab name="全部"> 全部（{{ total }}）</n-tab>
-          <n-tab name="科研处初审通过">科研处初审通过 </n-tab>
-          <n-tab name="科研处退回"> 科研处退回</n-tab>
-          <n-tab name="待审核">待审核</n-tab>
+          <n-tab name="0"> 全部（{{ total }}）</n-tab>
+          <n-tab name="1">科研处初审通过 </n-tab>
+          <n-tab name="2"> 科研处退回</n-tab>
+          <n-tab name="3">待审核</n-tab>
           <template #suffix>
             <span class="search"
               ><n-button text size="large" @click="showSearchBar">
@@ -23,6 +22,7 @@
           </template>
         </n-tabs></span
       >
+      <span class="all" v-else> 全部（{{ total }}）</span>
     </template>
     <BasicForm v-if="showSearch" @register="register" @submit="handleSubmit" @reset="handleReset">
       <template #statusSlot="{ model, field }">
@@ -42,9 +42,9 @@
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <n-tabs type="segment">
-          <n-tab-pane name="chap1" tab="我负责的项目"> </n-tab-pane>
-          <n-tab-pane name="chap2" tab="我参与的项目"> </n-tab-pane>
+        <n-tabs type="segment" @update:value="handleclick">
+          <n-tab name="1">我负责的项目 </n-tab>
+          <n-tab name="2">我参与的项目 </n-tab>
         </n-tabs>
       </template>
     </BasicTable>
@@ -57,7 +57,7 @@
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { myApply, deleteApply } from '@/api/project/list';
+  import { myApply, deleteApply, myApplypr } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
@@ -66,9 +66,11 @@
 
   const props = defineProps({
     status: Number,
+    total: Number,
   });
 
-  const { save_status } = toRefs(props);
+  const { status, total } = toRefs(props);
+
   const rules = {
     keyword: {
       required: true,
@@ -114,12 +116,17 @@
   const showSearch = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
+    category: 1,
+    pass_or_return: 0,
     save_status: 1,
+    status: 0,
+    b_type: 1,
+    x_type: 2,
     keyword: '',
     type: '',
   });
 
-  const total = ref(0);
+  // const total = ref(0);
   const params = ref({
     page: 1,
     rows: 20,
@@ -183,8 +190,17 @@
     //   return ret.data.data;
     // });
     formParams.status = status.value;
+    if (status.value == 5) {
+      formParams.save_status = 0;
+      formParams.status = 0;
+    }
+    formParams.x_type = status.value + 2;
     // debugger;
-    return await myApply({ ...formParams, ...params.value, ...res });
+    if (!formParams.pass_or_return || formParams.pass_or_return == 0) {
+      return await myApply({ ...formParams, ...params.value, ...res });
+    } else {
+      return await myApplypr({ ...formParams, ...params.value, ...res });
+    }
   };
 
   function onCheckedRow(rowKeys) {
@@ -192,7 +208,7 @@
   }
   function getPagination(pagination) {
     // console.log('11', pagination);
-    total.value = pagination.itemCount;
+    // total.value = pagination.itemCount;
   }
 
   function reloadTable() {
@@ -203,6 +219,16 @@
     // debugger;
     reloadTable();
   });
+  function handleclick(e) {
+    console.log(e);
+    formParams.category = e;
+    reloadTable();
+  }
+  function handleclickPr(e) {
+    console.log(e);
+    formParams.pass_or_return = e;
+    reloadTable();
+  }
   function confirmForm(e) {
     e.preventDefault();
     formBtnLoading.value = true;

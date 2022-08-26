@@ -21,7 +21,7 @@
                 ><p class="time">{{ item.start_date }}至{{ item.end_date }}</p>
               </div>
               <div class="img-box-actions">
-                <n-button type="primary" size="large" @click="handleDetail(item.id)"
+                <n-button type="primary" size="large" @click="handleDetail(item)"
                   >查看申报详情</n-button
                 >
               </div>
@@ -68,8 +68,8 @@
     total.value = data.data.data.total;
   });
 
-  function handleDetail(id) {
-    router.replace({ path: '/project/detail', query: { id:id } });
+  function handleDetail(item) {
+    router.replace({ path: '/project/detail', query: { id: item.id, status: item.dec_status } });
   }
   function handleEdit(id) {
     router.replace({ path: '/project/newapply', query: { id: id } });

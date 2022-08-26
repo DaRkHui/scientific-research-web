@@ -225,7 +225,7 @@
 </template>
 <script lang="ts" setup>
   import { ref, onMounted } from 'vue';
-  import { getConsoleInfo } from '@/api/dashboard/console';
+  // import { getConsoleInfo } from '@/api/dashboard/console';
   import VisiTab from './components/VisiTab.vue';
   import { CountTo } from '@/components/CountTo/index';
   import {
@@ -324,11 +324,11 @@
   ];
 
   onMounted(async () => {
-    const data = await getConsoleInfo();
-    visits.value = data.visits;
-    saleroom.value = data.saleroom;
-    orderLarge.value = data.orderLarge;
-    volume.value = data.volume;
+    // const data = await getConsoleInfo();
+    // visits.value = data.visits;
+    // saleroom.value = data.saleroom;
+    // orderLarge.value = data.orderLarge;
+    // volume.value = data.volume;
     loading.value = false;
   });
 </script>

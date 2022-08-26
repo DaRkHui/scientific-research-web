@@ -135,8 +135,11 @@
     id: '',
     des: '',
     x_type: 2,
+    need_review: '',
   });
   const formParams = reactive({
+    b_type: '1',
+    x_type: 2,
     keyword: '',
     type: '',
   });
@@ -205,6 +208,7 @@
     //   return ret.data.data;
     // });
     formParams.status = status.value;
+    formParams.x_type = status.value + 2;
 
     return await projectReview({ ...formParams, ...params.value, ...res });
   };
@@ -266,7 +270,8 @@
 
   function handleSelect(record) {
     showModal.value = true;
-    auditForm.id = record.id_num;
+    auditForm.id = record.id;
+    auditForm.need_review = record.need_review;
     auditForm.x_type = Number(record.status) + 2;
   }
 

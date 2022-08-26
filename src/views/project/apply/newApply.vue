@@ -59,8 +59,8 @@
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="项目开始时间" path="start_date" required>
-              <n-date-picker type="date" v-model:value="formValue.start_date" />
+            <n-form-item label="项目开始时间" required>
+              <n-date-picker type="date" v-model:value="start_date" />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
@@ -70,8 +70,8 @@
           </n-grid-item>
 
           <n-grid-item>
-            <n-form-item label="计划完成时间" path="end_date" required>
-              <n-date-picker v-model:value="formValue.end_date" type="date" />
+            <n-form-item label="计划完成时间" required>
+              <n-date-picker v-model:value="end_date" type="date" />
             </n-form-item>
           </n-grid-item>
 
@@ -127,13 +127,13 @@
               <n-select
                 label-field="username"
                 value-field="userid"
-                v-model:value="formParams.userid"
+                v-model:value="formParams.user_id"
                 filterable
                 :options="memberList"
               />
             </n-form-item>
-            <n-form-item label="分工" path="dowork">
-              <n-input placeholder="请分配人员分工" v-model:value="formParams.dowork" />
+            <n-form-item label="分工" path="do_work">
+              <n-input placeholder="请分配人员分工" v-model:value="formParams.do_work" />
             </n-form-item>
           </n-form>
 
@@ -174,6 +174,8 @@
   import { formatToDate } from '@/utils/dateUtil.ts';
   import type { UploadInst, UploadFileInfo } from 'naive-ui';
   import { file } from '@babel/types';
+  import { useTabsViewStore } from '@/store/modules/tabsView';
+  const tabsViewStore = useTabsViewStore();
 
   const route = useRoute();
   const globSetting = useGlobSetting();
@@ -301,15 +303,17 @@
   const message = useMessage();
   const router = useRouter();
   const formParams = reactive({
-    userid: '',
-    dowork: '',
+    user_id: '',
+    do_work: '',
   });
+  const start_date = ref(null);
+  const end_date = ref(null);
   const defaultValueRef = () => ({
     plan: '',
     approval_id: '',
     created_user_id: '',
     department: '',
-    end_date: ref(new Date()),
+    end_date: ref(null),
     expenses: '',
     level: 0,
     material_template_info: '',
@@ -317,10 +321,11 @@
     phone: '',
     project_apply_plan_id: '',
     save_status: 0,
-    start_date: ref(new Date()),
+    start_date: ref(null),
     type: 0,
     user_name: '',
     users: '',
+    need_review: '',
   });
 
   let formValue = reactive(defaultValueRef());
@@ -341,7 +346,7 @@
     formBtnLoading.value = true;
 
     let list = memberList.value.find((obj) => {
-      return obj.userid === formParams.userid;
+      return obj.userid === formParams.user_id;
     });
     console.log(list);
     let copy = Object.assign({}, formParams, list);
@@ -361,8 +366,8 @@
     formRef.value.validate(async (errors) => {
       if (!errors) {
         formValue.save_status = status;
-        formValue.end_date = formatToDate(formValue.end_date);
-        formValue.start_date = formatToDate(formValue.start_date);
+        formValue.end_date = formatToDate(end_date.value);
+        formValue.start_date = formatToDate(end_date.value);
         formValue.save_status = status;
         formValue.users = JSON.stringify(newMember.value);
         let arr = Array.from({ ...fileList.value, length: fileList.value.length }).map(
@@ -393,7 +398,9 @@
           } else {
             message.success('保存草稿成功');
           }
-          router.replace({ path: '/project/plan' });
+
+          router.replace({ path: '/project/apply' });
+          tabsViewStore.closeCurrentTab(route);
           // debugger
         } else {
           message.info(result.data.info);
@@ -413,6 +420,7 @@
     formValue.expert_approval_id = detail.expert_approval_id;
     formValue.project_apply_plan_id = detail.id;
     formValue.approval_id = detail.approval_id;
+    formValue.need_review = detail.need_review;
   });
   function resetForm() {
     router.replace({ path: '/project/plan' });

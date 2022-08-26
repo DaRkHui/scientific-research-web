@@ -38,13 +38,13 @@
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="申报开始时间" path="start_date">
-              <n-date-picker type="date" v-model:value="formValue.start_date" />
+            <n-form-item label="申报开始时间">
+              <n-date-picker type="date" v-model:value="start_date" />
             </n-form-item>
           </n-grid-item>
           <n-grid-item>
-            <n-form-item label="申报结束时间" path="end_date">
-              <n-date-picker type="date" v-model:value="formValue.end_date" />
+            <n-form-item label="申报结束时间">
+              <n-date-picker type="date" v-model:value="end_date" />
             </n-form-item>
           </n-grid-item>
 
@@ -139,13 +139,17 @@
   import { BasicUpload } from '@/components/Upload';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useGlobSetting } from '@/hooks/setting';
-  import { newApplyPlan } from '@/api/project/list';
+  import { newApplyPlan, getApplyInfo, applyMaterial } from '@/api/project/list';
   import { queryapprovermenu } from '@/api/system/user';
   import { useUserStore } from '@/store/modules/user';
-  import { useRouter } from 'vue-router';
+  import { useTabsViewStore } from '@/store/modules/tabsView';
+  import { useRouter, useRoute } from 'vue-router';
   import { formatToDate } from '@/utils/dateUtil.ts';
+  import { useGo } from '@/hooks/web/usePage';
+  const go = useGo();
   const globSetting = useGlobSetting();
   const userStore = useUserStore();
+  const tabsViewStore = useTabsViewStore();
   const matterList = [
     {
       label: '横向',
@@ -172,7 +176,7 @@
     },
   ];
 
-  const rules = {
+  const rules: any = {
     name: {
       required: true,
       message: '请输入申报计划名称',
@@ -202,6 +206,8 @@
     },
   };
   const approvalList = ref([]);
+  const start_date = ref(null);
+  const end_date = ref(null);
   const levelList = [
     {
       label: '院级',
@@ -227,21 +233,22 @@
   const message = useMessage();
   const { uploadUrl } = globSetting;
   const router = useRouter();
+  const route = useRoute();
   // debugger;
   const defaultValueRef = () => ({
     approval_id: '',
     created_user_id: userStore.userid,
     department: '',
     des: '',
-    end_date: ref(new Date()),
+    end_date: ref(null),
     expert_approval_id: '',
     id_num: '',
     material_template_info: '',
     name: '',
     need_review: 2,
     save_status: 0,
-    start_date: ref(new Date()),
-    type: '1',
+    start_date: ref(null),
+    type: '',
     level: '',
     des_material: '',
   });
@@ -256,8 +263,8 @@
     formRef.value.validate(async (errors) => {
       if (!errors) {
         formValue.save_status = status;
-        formValue.end_date = formatToDate(formValue.end_date);
-        formValue.start_date = formatToDate(formValue.start_date);
+        formValue.end_date = formatToDate(end_date.value);
+        formValue.start_date = formatToDate(start_date.value);
         formValue.save_status = status;
         let arr = Array.from({ ...fileList.value, length: fileList.value.length }).map(
           (file, index) => ({
@@ -287,23 +294,27 @@
           } else {
             message.success('保存草稿成功');
           }
-          router.replace({ path: '/project/plan' });
+
+          go('/project/plan', true);
+          tabsViewStore.closeCurrentTab(route);
+          // router.replace({ path: '/project/plan' });
           // debugger
         } else {
           message.info(result.data.info);
         }
-
-        // const ret = result.data.data;
-
-        // //  arr3=arr2.filter(item=>item.id == 20)
-        // console.log('====================================');
-        // console.log(formParams);
       } else {
         message.error('验证失败，请填写完整信息');
       }
     });
   }
   onMounted(async () => {
+  
+    if (route.query.id) {
+      const data = await getApplyInfo({ id: route.query.id });
+      formValue = { ...defaultValueRef(), ...data.data.data };
+      // const ret = await applyMaterial({ id: route.query.id });
+    }
+
     const params = {
       name: '',
       totalcount: 0,

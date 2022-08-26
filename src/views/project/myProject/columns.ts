@@ -32,19 +32,19 @@ export const columns = [
   },
   {
     title: '立项日期',
-    key: 'start_date',
+    key: 'created_at',
     width: 160,
-    sorter: (row1, row2) => row1.start_date - row2.start_date
+    // sorter: (row1, row2) => row1.start_date - row2.start_date
   },
 
   {
     title: '所属科室',
-    key: 'end_date',
+    key: 'department',
     width: 160,
   },
   {
     title: '状态',
-    key: 'review_time_end',
+    key: 'status',
     width: 160,
   },
   {

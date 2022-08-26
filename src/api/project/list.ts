@@ -46,6 +46,14 @@ export function getReviewList(params) {
     params,
   });
 }
+//获取评审专家
+export function selectExpert(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_plan/select_expert',
+    method: 'GET',
+    params,
+  });
+}
 //新增申请计划
 export function newApplyPlan(params) {
   return http.request<BasicResponseModel>({
@@ -86,12 +94,29 @@ export function getInfo(params) {
     params,
   });
 }
-//删除申请
+//申报材料详情
+export function applyMaterial(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply/material_template',
+    method: 'GET',
+    params,
+  });
+}
+//删除计划
 export function deleteApply(params) {
   return http.request<BasicResponseModel>({
     headers: { 'Content-Type': ContentTypeEnum.JSON },
     url: '/v1/project/apply_plan',
     method: 'DELETE',
+    params,
+  });
+}
+//关闭计划
+export function closePlan(params) {
+  return http.request<BasicResponseModel>({
+    headers: { 'Content-Type': ContentTypeEnum.JSON },
+    url: '/v1/project/apply_plan/close',
+    method: 'PUT',
     params,
   });
 }
@@ -143,10 +168,18 @@ export function toProjectReview(params) {
     params,
   });
 }
-//我的项目-项目申报列表
+//我的项目-项目申报列表全部
 export function myApply(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply',
+    method: 'GET',
+    params,
+  });
+}
+//我的项目-项目申报列表退回or通过or审核
+export function myApplypr(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/apply/pass_or_return',
     method: 'GET',
     params,
   });

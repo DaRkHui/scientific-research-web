@@ -67,13 +67,22 @@
           <span
             >申报材料使用要求申报材料使用要求申报材料使材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求。</span
           >
-          <n-timeline style="line-height: 5; margin: 8%">
-            <n-timeline-item type="warning" title="申报书模版.doc" />
-            <n-timeline-item type="warning" title="任务书模版.doc" />
-            <n-timeline-item type="warning" title="项目中期模版.doc" />
-            <n-timeline-item type="warning" title="项目结项模版.doc" />
-          </n-timeline>
-          <p style="text-align: center">
+          <div v-if="typeTabList.length">
+            <n-thing
+              class="thing-cell"
+              v-for="item in typeTabList"
+              :key="item.file_path"
+              @click="switchType(item)"
+            >
+              <template #header
+                >{{ item.file_name
+                }}<span style="icon"
+                  ><CloudDownloadOutlined style="width: 16px; display: inline-block" /></span
+              ></template>
+            </n-thing>
+          </div>
+          <div v-else>暂未上传申报材料</div>
+          <p style="text-align: center" v-if="route.query.status && route.query.status !== '1'">
             <n-button type="info" ghost @click="handleEdit"> 项目申报 </n-button>
           </p>
         </div>
@@ -87,12 +96,12 @@
   import { useMessage } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useRouter, useRoute } from 'vue-router';
-  import { getApplyInfo } from '@/api/project/list';
+  import { getApplyInfo, applyMaterial } from '@/api/project/list';
   import { levelFilters, typeFilters } from '@/utils/filters.ts';
   const message = useMessage();
   const router = useRouter();
   const route = useRoute();
-
+  const typeTabList = ref([{}]);
   const detail = ref<any>({});
   const handleBack = () => {
     router.back();
@@ -100,10 +109,15 @@
   function handleEdit() {
     router.replace({ path: '/project/newapply', query: { id: route.query.id } });
   }
+  function switchType(e) {
+    window.location.href = '/download/' + e.file_path;
+  }
   onMounted(async () => {
     const data = await getApplyInfo({ id: route.query.id });
     detail.value = data.data.data;
-
+    const ret = await applyMaterial({ id: route.query.id });
+    // debugger;
+    typeTabList.value = ret.data.data.result;
     // visits.value = data.visits;
     // saleroom.value = data.saleroom;
     // orderLarge.value = data.orderLarge;
@@ -145,6 +159,34 @@
       font-weight: bold;
       line-height: 30px;
       color: #5c6268;
+    }
+    .thing-cell {
+      // margin: 0 -16px 10px;
+      padding: 12px 28px 10px;
+      border-bottom: 1px dashed #ccc;
+      .icon-cell {
+        width: 16px;
+      }
+      &:hover {
+        background: #f0faff;
+        color: #2d8cf0;
+        border-left: 2px solid;
+        cursor: pointer;
+      }
+    }
+
+    .thing-cell-on {
+      background: #f0faff;
+      color: #2d8cf0;
+      border-left: 2px solid;
+
+      ::v-deep(.n-thing-main .n-thing-header .n-thing-header__title) {
+        color: #2d8cf0;
+      }
+
+      &:hover {
+        background: #f0faff;
+      }
     }
   }
 </style>
