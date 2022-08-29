@@ -66,7 +66,7 @@
               />
             </n-form-item>
           </n-grid-item>
-          <!-- <n-grid-item>
+          <n-grid-item>
             <n-form-item label="是否需要专家线上评审" path="need_review" required>
               <n-radio-group v-model:value="formValue.need_review" name="need_review">
                 <n-space>
@@ -75,20 +75,20 @@
                 </n-space>
               </n-radio-group>
             </n-form-item>
-          </n-grid-item> -->
-          <!-- <n-grid-item>
+          </n-grid-item>
+          <n-grid-item>
             <n-form-item label="申报限额" path="need_review">
-              <n-radio-group v-model:value="formValue.need_review" name="sex" disabled>
+              <n-radio-group v-model:value="formValue.need_review" name="need_review" disabled>
                 <n-space>
                   <n-radio :value="1">是</n-radio>
                   <n-radio :value="2">否</n-radio>
                 </n-space>
               </n-radio-group>
             </n-form-item>
-          </n-grid-item> -->
+          </n-grid-item>
           <n-grid-item>
             <n-form-item label="申报说明" path="des">
-              <n-input v-model:value="formValue.des" type="textarea" placeholder="请输入预约备注" />
+              <n-input v-model:value="formValue.des" type="textarea" placeholder="请输入申报说明" />
             </n-form-item>
           </n-grid-item>
 
@@ -245,7 +245,7 @@
     id_num: '',
     material_template_info: '',
     name: '',
-    need_review: 2,
+    need_review: 1,
     save_status: 0,
     start_date: ref(null),
     type: '',

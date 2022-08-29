@@ -47,11 +47,10 @@ export function getReviewList(params) {
   });
 }
 //获取评审专家
-export function selectExpert(params) {
+export function selectExpert() {
   return http.request<BasicResponseModel>({
     url: '/v1/project/review_plan/select_expert',
     method: 'GET',
-    params,
   });
 }
 //新增申请计划
@@ -67,6 +66,14 @@ export function newApply(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/apply',
     method: 'POST',
+    params,
+  });
+}
+//评审计划-获取申报计划
+export function selectReviewPlan(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_plan/select',
+    method: 'GET',
     params,
   });
 }

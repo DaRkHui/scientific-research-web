@@ -16,7 +16,7 @@ export const columns = [
     title: '项目名称',
     key: 'name',
     width: 100,
-    
+
   },
   {
     title: '项目类别',
@@ -49,12 +49,24 @@ export const columns = [
     title: '评审进度',
     key: 'need_review',
     width: 160,
+    render(row) {
+      return h(
+        NTag,
+        {
+          type: ['', 'warning', 'info'][row.need_review],
+        },
+        {
+          default: () => ['', '需要评审', '无需评审'][row.need_review],
+        }
+      );
+    },
+
   },
-  {
-    title: '状态',
-    key: 'first_check',
-    width: 160,
-  },
+  // {
+  //   title: '状态',
+  //   key: 'first_check',
+  //   width: 160,
+  // },
 
 
 ];

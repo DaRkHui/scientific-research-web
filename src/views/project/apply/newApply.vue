@@ -123,7 +123,7 @@
             :label-width="80"
             class="py-4"
           >
-            <n-form-item label="人员" path="name">
+            <n-form-item label="人员" path="username">
               <n-select
                 label-field="username"
                 value-field="userid"
@@ -180,7 +180,7 @@
   const route = useRoute();
   const globSetting = useGlobSetting();
   const userStore = useUserStore();
-  const memberList = ref([]);
+  const memberList = ref([] as any);
   const matterList = [
     {
       label: '横向',
@@ -206,9 +206,7 @@
       value: 3,
     },
   ];
-  const pagination = {
-    pageSize: 15,
-  };
+
   const rules = {
     name: {
       required: true,

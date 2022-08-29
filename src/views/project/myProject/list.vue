@@ -42,9 +42,9 @@
       :scroll-x="1090"
     >
       <template #tableTitle>
-        <n-tabs type="segment" @update:value="handleclick">
-          <n-tab name="1">我负责的项目 </n-tab>
-          <n-tab name="2">我参与的项目 </n-tab>
+        <n-tabs type="segment" default-value="2" @update:value="handleclick">
+          <n-tab name="2">我负责的项目 </n-tab>
+          <n-tab name="1">我参与的项目 </n-tab>
         </n-tabs>
       </template>
     </BasicTable>
@@ -116,7 +116,7 @@
   const showSearch = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    category: 1,
+    category: 2,
     pass_or_return: 0,
     save_status: 1,
     status: 0,

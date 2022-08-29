@@ -8,7 +8,7 @@ export const columns = [
     key: 'id_num',
     width: 100,
     sorter: (row1, row2) => row1.id - row2.id
- 
+
   },
   {
     title: '项目名称',
@@ -46,11 +46,14 @@ export const columns = [
     title: '状态',
     key: 'status',
     width: 160,
+    render(row) {
+      return ['申报中', '立项中', '变更中'][row.status]
+    },
   },
-  {
-    title: '项目进度',
-    key: 'status',
-    width: 160,
-  },
+  // {
+  //   title: '项目进度',
+  //   key: 'status',
+  //   width: 160,
+  // },
 
 ];
