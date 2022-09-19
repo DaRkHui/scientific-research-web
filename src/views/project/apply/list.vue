@@ -11,7 +11,7 @@
       <span class="all"> 全部（{{ total }}）</span>
     </template>
 
-    <div class="cardContent" v-if="cardList.length">
+    <div class="cardContent" v-if="cardList.length" id="drawer-target">
       <div class="card-item" v-for="(item, index) in cardList" :key="`img_${index}`">
         <n-card>
           <template #cover>
@@ -37,21 +37,41 @@
       </div>
     </div>
     <n-empty description="暂无数据" v-else />
+    <n-drawer
+      v-model:show="active"
+      width="100%"
+      :placement="placement"
+      :trap-focus="false"
+      :block-scroll="false"
+      to="#drawer-target"
+    >
+      <transition name="fade" mode="out-in" appear>
+        <n-drawer-content>
+          <Detail @handleBack="activate('right')" />
+        </n-drawer-content>
+      </transition>
+    </n-drawer>
   </n-card>
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, watch, onMounted } from 'vue';
-  import { useMessage } from 'naive-ui';
-  import { BasicTable, TableAction } from '@/components/Table';
-  import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
+  import { h, reactive, ref, watch, onMounted, provide } from 'vue';
+  import { useMessage, DrawerPlacement } from 'naive-ui';
   import { getTableListStatus } from '@/api/project/list';
   import { levelFilters } from '@/utils/filters.ts';
   import { useRouter } from 'vue-router';
-
+  import Detail from '../detail/planDetail.vue';
   const router = useRouter();
   const formRef: any = ref(null);
   const message = useMessage();
+  const childId = ref();
+  provide('Id', childId);
+  const active = ref(false);
+  const placement = ref<DrawerPlacement>('top');
+  const activate = (place: DrawerPlacement) => {
+    active.value = !active.value;
+    placement.value = place;
+  };
 
   const cardList = ref<any>([]);
   const total = ref(0);
@@ -69,7 +89,10 @@
   });
 
   function handleDetail(item) {
-    router.replace({ path: '/project/detail', query: { id: item.id, status: item.dec_status } });
+    // router.replace({ path: '/project/detail', query: { id: item.id, status: item.dec_status } });
+    childId.value = item.id;
+    console.log(childId);
+    activate('right');
   }
   function handleEdit(id) {
     router.replace({ path: '/project/newapply', query: { id: id } });
@@ -93,10 +116,10 @@
 
   .cardContent {
     width: auto;
-    height: auto;
+    min-height: 1000px;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     padding: 0 10px;
     // margin: 0 auto;
 

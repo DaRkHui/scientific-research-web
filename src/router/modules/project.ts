@@ -35,19 +35,6 @@ const routes: Array<RouteRecordRaw> = [
           title: '我的项目',
         },
         component: () => import('@/views/project/myProject/myProject.vue'),
-        // children: [
-        //   {
-        //     path: 'newplan',
-        //     name: 'project-new',
-        //     meta: {
-        //       title: '新增',
-        //       hidden: true,
-        //       hideTab: true,
-
-        //     },
-        //     component: () => import('@/views/project/plan/newPlan.vue'),
-        //   },
-        // ],
       },
       {
         path: 'plan',
@@ -101,16 +88,16 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/project/apply/newApply.vue'),
       },
-      {
-        path: 'detail',
-        name: 'project-detail',
-        meta: {
-          title: '项目申报详情',
-          hidden: true,
-          hideTab: true,
-        },
-        component: () => import('@/views/project/plan/detail.vue'),
-      },
+      // {
+      //   path: 'detail',
+      //   name: 'project-detail',
+      //   meta: {
+      //     title: '项目申报详情',
+      //     hidden: true,
+      //     hideTab: true,
+      //   },
+      //   component: () => import('@/views/detail/planDetail.vue'),
+      // },
 
       {
         path: 'audit',
@@ -121,15 +108,24 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/project/audit/audit.vue'),
       },
+      // {
+      //   path: 'auditDetail',
+      //   name: 'audit-detail',
+      //   meta: {
+      //     title: '项目审核详情',
+      //     hidden: true,
+      //     hideTab: true,
+      //   },
+      //   component: () => import('@/views/detail/projectDetail.vue'),
+      // },
       {
-        path: 'auditDetail',
-        name: 'audit-detail',
+        path: 'statistics',
+        name: 'project-statistics',
         meta: {
-          title: '项目审核详情',
-          hidden: true,
-          hideTab: true,
+          id: '306000006',
+          title: '项目统计',
         },
-        component: () => import('@/views/project/audit/detail.vue'),
+        component: () => import('@/views/project/audit/statistics.vue'),
       },
 
       {
@@ -140,6 +136,35 @@ const routes: Array<RouteRecordRaw> = [
           title: '评审计划',
         },
         component: () => import('@/views/project/review/review.vue'),
+      },
+      {
+        path: 'reviewAll',
+        name: 'review-all',
+        meta: {
+          id: '306000008',
+          title: '评审汇总',
+        },
+        component: () => import('@/views/project/review/reviewAll.vue'),
+      },
+
+      {
+        path: 'expert',
+        name: 'project-expert',
+        meta: {
+          id: '306000007',
+          title: '专家评审',
+        },
+        component: () => import('@/views/project/expert/expert.vue'),
+      },
+      {
+        path: 'expertDetail',
+        name: 'expert-detail',
+        meta: {
+          title: '评审详情',
+          hidden: true,
+          hideTab: true,
+        },
+        component: () => import('@/views/project/expert/detail.vue'),
       },
       {
         path: 'newReview',

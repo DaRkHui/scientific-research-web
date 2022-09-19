@@ -3,22 +3,13 @@
     <n-grid :x-gap="24">
       <n-grid-item span="4">
         <n-card :bordered="false" size="small" class="proCard">
-          <span class="proCard-title">我的项目（{{ formParams.total }}）</span>
+          <span class="proCard-title"
+            >专家评审（{{ formParams.total }}）
+            <!-- <n-button @click="activate('right')"> 右 </n-button> -->
+          </span>
           <n-thing
             class="thing-cell"
             v-for="item in typeTabList"
-            :key="item.key"
-            :class="{ 'thing-cell-on': type === item.key }"
-            @click="switchType(item)"
-          >
-            <template #header>{{ item.name }}({{ item.desc }})</template>
-            <!-- <template #description>{{ item.desc }}</template> -->
-          </n-thing>
-        </n-card>
-        <n-card :bordered="false" size="small" class="proCard" style="margin-top: 30px">
-          <n-thing
-            class="thing-cell"
-            v-for="item in throwTabList"
             :key="item.key"
             :class="{ 'thing-cell-on': type === item.key }"
             @click="switchType(item)"
@@ -39,10 +30,19 @@
 </template>
 <script lang="ts" setup>
   import { h, reactive, ref, onMounted, onBeforeMount, onUpdated } from 'vue';
-  import { myApplyTotal } from '@/api/project/list';
+  import { useMessage, DrawerPlacement } from 'naive-ui';
+  import { getExporNum } from '@/api/project/list';
+
   import BasicSetting from './BasicSetting.vue';
   import SafetySetting from './SafetySetting.vue';
   import List from './list.vue';
+  const active = ref(false);
+  const placement = ref<DrawerPlacement>('top');
+  const activate = (place: DrawerPlacement) => {
+    // debugger;
+    active.value = !active.value;
+    placement.value = place;
+  };
   const formParams = reactive({
     Change: 0,
     ClosingItem: 0,
@@ -53,12 +53,12 @@
     total: 0,
   });
   const typeTabList = ref([{}]);
-  const throwTabList = ref([{}]);
+
   const type = ref(0);
   const num = ref(0);
   const typeTitle = ref('已发布');
   onMounted(async () => {
-    const result = await myApplyTotal();
+    const result = await getExporNum();
     const ret = result.data.data.result;
     formParams.Change = ret.Change;
     formParams.ClosingItem = ret.ClosingItem;
@@ -67,13 +67,7 @@
     formParams.IntermediateInspection = ret.IntermediateInspection;
     formParams.ProjectInitiation = ret.ProjectInitiation;
     formParams.total = result.data.data.total;
-    throwTabList.value = [
-      {
-        name: `我的草稿`,
-        desc: formParams.Draft,
-        key: 5,
-      },
-    ];
+
     typeTabList.value = [
       {
         name: '项目申报',
@@ -105,7 +99,6 @@
   });
 
   function switchType(e) {
-
     console.log(e);
 
     type.value = e.key;

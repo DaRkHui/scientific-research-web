@@ -1,5 +1,5 @@
 <template>
-  <n-card :bordered="false" class="proCard pmp">
+  <n-card :bordered="false" class="proCard pmp" id="drawer-target">
     <template #header>
       <span class="all"> 全部（{{ total }}）</span>
       <span class="search"
@@ -61,17 +61,32 @@
         </n-space>
       </template>
     </n-modal>
+    <n-drawer
+      v-model:show="active"
+      width="100%"
+      :placement="placement"
+      :trap-focus="false"
+      :block-scroll="false"
+      to="#drawer-target"
+    >
+      <transition name="fade" mode="out-in" appear>
+        <n-drawer-content>
+          <planDetail @handleBack="activate('right')" />
+        </n-drawer-content>
+      </transition>
+    </n-drawer>
   </n-card>
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, toRefs, watch } from 'vue';
-  import { useMessage } from 'naive-ui';
+  import { h, reactive, ref, toRefs, watch, provide } from 'vue';
+  import { useMessage, DrawerPlacement } from 'naive-ui';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { projectReview, toProjectReview } from '@/api/project/list';
   import { columns } from './columns';
+  import planDetail from '../detail/projectDetail.vue';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
 
@@ -82,6 +97,15 @@
   });
 
   const { status } = toRefs(props);
+  const childId = ref();
+  provide('Id', childId);
+  const active = ref(false);
+  const placement = ref<DrawerPlacement>('top');
+  const activate = (place: DrawerPlacement) => {
+    active.value = !active.value;
+    placement.value = place;
+  };
+
   const rules = {
     choice: {
       required: true,
@@ -226,7 +250,8 @@
     // loadDataTable();
   }
   watch(status, () => {
-    // debugger;
+    // debugger; 
+    active.value = false;
     reloadTable();
   });
   function confirmForm(e) {
@@ -263,9 +288,10 @@
   }
 
   function handleEdit(record: Recordable) {
-    router.replace({ path: '/project/auditDetail', query: { id: record.id } });
-    // console.log('点击了编辑', record);
-    // router.push({ name: 'basic-info', params: { id: record.id } });
+    // router.replace({ path: '/project/auditDetail', query: { id: record.id } });
+    childId.value = record.id;
+    console.log(childId);
+    activate('right');
   }
 
   function handleSelect(record) {
@@ -287,6 +313,7 @@
 
 <style lang="less" scoped>
   .pmp {
+    min-height: 1000px;
     ::v-deep(.n-card-header) {
       padding: 0;
     }

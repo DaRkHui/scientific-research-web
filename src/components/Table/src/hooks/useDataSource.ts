@@ -72,7 +72,7 @@ export function useDataSource(
         params = (await beforeRequest(params)) || params;
       }
       const { data } = await request(params);
-      // debugger
+
       const res = data.data
       const resultTotal = res[totalField] || 0;
       const currentPage = res[pageField];
@@ -91,7 +91,11 @@ export function useDataSource(
         // can modify the data returned by the interface for processing
         resultInfo = (await afterRequest(resultInfo)) || resultInfo;
       }
+      for (let i = 0; i < resultInfo.length; i++) {
+        resultInfo[i].index = i + 1;
+      }
       dataSourceRef.value = resultInfo;
+
       setPagination({
         [pageField]: currentPage,
         [totalField]: resultTotal,

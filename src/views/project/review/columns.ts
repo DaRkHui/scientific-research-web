@@ -5,7 +5,7 @@ export const columns = [
 
   {
     title: '评审计划名称',
-    key: 'name',
+    key: 'review_plan_name',
     width: 100,
   },
   {

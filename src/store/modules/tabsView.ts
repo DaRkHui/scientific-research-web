@@ -39,9 +39,9 @@ export const useTabsViewStore = defineStore({
       if (whiteList.includes(route.name)) return false;
       const isExists = this.tabsList.some((item) => item.fullPath == route.fullPath);
       if (!isExists) { 
-        console.log('====================================');
+    
         console.log(route);
-        console.log('====================================');
+    
         this.tabsList.push(route);
       }
       return true;

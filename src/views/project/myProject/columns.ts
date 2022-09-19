@@ -2,7 +2,10 @@ import { h } from 'vue';
 import { NAvatar, NTag } from 'naive-ui';
 
 export const columns = [
-
+  {
+    type: 'selection',
+    fixed: 'left'
+  },
   {
     title: '项目编号',
     key: 'id_num',

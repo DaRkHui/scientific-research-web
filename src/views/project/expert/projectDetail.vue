@@ -1,22 +1,9 @@
 <template>
   <div>
-    <div class="n-layout-page-header">
-      <n-card :bordered="false">
-        <n-breadcrumb separator=">">
-          <n-breadcrumb-item @click="handleBack">
-            返回上一级<template #separator> | </template></n-breadcrumb-item
-          >
-          <n-breadcrumb-item> 项目申报详情</n-breadcrumb-item>
-          <n-breadcrumb-item> {{ detail.name }}</n-breadcrumb-item>
-        </n-breadcrumb>
-      </n-card>
-    </div>
-
     <n-card :bordered="false" class="mt-4 proCard" size="small" :segmented="{ content: true }">
       <div style="display: flex">
         <div class="content">
-          <span class="from-title">项目基本信息</span>
-          <n-divider />
+
           <n-descriptions
             label-placement="left"
             label-align="left"
@@ -74,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, onMounted } from 'vue';
+  import { h, reactive, ref, onMounted, inject } from 'vue';
   import { useMessage } from 'naive-ui';
 
   import { CloudDownloadOutlined } from '@vicons/antd';
@@ -138,17 +125,16 @@
   const pagination = {
     pageSize: 5,
   };
-  function handleEdit() {
-    router.replace({ path: '/project/newapply', query: { id: route.query.id } });
-  }
 
   onMounted(async () => {
-    const data = await projectReviewDetail({ id: route.query.id });
+    const idValue = inject('Id');
+    // debugger;
+    const data = await projectReviewDetail({ id: idValue.value });
     detail.value = data.data.data.result;
-    const ret = await projectReviewInfo({ id: route.query.id });
+    const ret = await projectReviewInfo({ id: idValue.value });
     // debugger;
     typeTabList.value = ret.data.data.result;
-    const list = await projectReviewStaff({ id: route.query.id });
+    const list = await projectReviewStaff({ id: idValue.value });
     // debugger;
     memberList.value = list.data.data.result;
 

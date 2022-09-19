@@ -30,7 +30,7 @@ export function getPlanTotal(params) {
   });
 }
 
-//获取评审table 数量
+//获取评审计划table 数量
 export function getReviewNum(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/review_plan',
@@ -38,7 +38,56 @@ export function getReviewNum(params) {
     params,
   });
 }
-//获取评审table
+//获取专家评审详情
+export function getExportCheck(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/export_check/info',
+    method: 'GET',
+    params,
+  });
+}
+//获取专家评审table
+export function getExportList(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/export_check',
+    method: 'GET',
+    params,
+  });
+}
+//获取专家评审table数量
+export function getExporNum(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/export_check/total',
+    method: 'GET',
+    params,
+  });
+}
+//获取评审汇总table
+export function getSummmaryList(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_summary',
+    method: 'GET',
+    params,
+  });
+}
+//获取评审汇总table 数量
+export function getSummmaryNum(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_summary/total',
+    method: 'GET',
+    params,
+  });
+}
+//评审汇总审核
+export function toSummmary(params) {
+  return http.request<BasicResponseModel>({
+    headers: { 'Content-Type': ContentTypeEnum.JSON },
+    url: '/v1/project/review_summary',
+    method: 'PUT',
+    params,
+  });
+}
+//获取评审计划table
 export function getReviewList(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/review_plan/by_name',
@@ -77,11 +126,36 @@ export function selectReviewPlan(params) {
     params,
   });
 }
+//评审计划-根据申报计划id查项目
+export function getapplybyid(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_plan/getapplybyid',
+    method: 'GET',
+    params,
+  });
+}
+//新增评审方案
+export function newReviewProgram(params) {
+  return http.request<BasicResponseModel>({
+    url: '/v1/project/review_program',
+    method: 'POST',
+    params,
+  });
+}
 //新增评审计划
 export function newReviewPlan(params) {
   return http.request<BasicResponseModel>({
     url: '/v1/project/review_plan',
     method: 'POST',
+    params,
+  });
+}
+//删除计划
+export function deleteReview(params) {
+  return http.request<BasicResponseModel>({
+    headers: { 'Content-Type': ContentTypeEnum.JSON },
+    url: '/v1/project/review_plan',
+    method: 'DELETE',
     params,
   });
 }

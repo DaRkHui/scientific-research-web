@@ -59,7 +59,7 @@
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
-  import { getReviewList, deleteApply } from '@/api/project/list';
+  import { getReviewList, deleteReview } from '@/api/project/list';
   import { columns } from './columns';
   import { PlusOutlined, SearchOutlined } from '@vicons/antd';
   // import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
@@ -148,14 +148,14 @@
             // 根据权限控制是否显示: 有权限，会显示，支持多个
             // auth: ['basic_list'],
           },
-          {
-            label: '预览',
-            onClick: handleEdit.bind(null, record),
-            ifShow: () => {
-              return true;
-            },
-            // auth: ['basic_list'],
-          },
+          // {
+          //   label: '预览',
+          //   onClick: handleEdit.bind(null, record),
+          //   ifShow: () => {
+          //     return true;
+          //   },
+          //   // auth: ['basic_list'],
+          // },
         ],
 
         select: (key) => {
@@ -203,6 +203,7 @@
   }
   watch(save_status, () => {
     // debugger;
+    active.value = false;
     reloadTable();
   });
   function confirmForm(e) {
@@ -231,7 +232,7 @@
   async function handleDelete(record) {
     const ids = [record.id];
 
-    let result = await deleteApply({ ids: ids });
+    let result = await deleteReview({ ids: ids });
 
     let code = result.data.code;
 

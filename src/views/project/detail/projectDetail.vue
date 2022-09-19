@@ -6,7 +6,7 @@
           <n-breadcrumb-item @click="handleBack">
             返回上一级<template #separator> | </template></n-breadcrumb-item
           >
-          <n-breadcrumb-item> 项目申报详情</n-breadcrumb-item>
+          <n-breadcrumb-item> 项目详情</n-breadcrumb-item>
           <n-breadcrumb-item> {{ detail.name }}</n-breadcrumb-item>
         </n-breadcrumb>
       </n-card>
@@ -15,8 +15,8 @@
     <n-card :bordered="false" class="mt-4 proCard" size="small" :segmented="{ content: true }">
       <div style="display: flex">
         <div class="content">
-          <p>{{ detail.name }}</p>
-          <br />
+          <span class="from-title">项目基本信息</span>
+          <n-divider />
           <n-descriptions
             label-placement="left"
             label-align="left"
@@ -31,42 +31,27 @@
             size="large"
             class="decInfo"
           >
+            <n-descriptions-item label="项目名称">{{ detail.name }}</n-descriptions-item>
             <n-descriptions-item label="申报计划名称">{{ detail.name }}</n-descriptions-item>
-            <n-descriptions-item label="项目来源单位">{{ detail.department }}</n-descriptions-item>
-            <n-descriptions-item label="计划编号">{{ detail.id_num }}</n-descriptions-item>
-            <n-descriptions-item label="项目类型">{{
-              typeFilters(detail.type)
-            }}</n-descriptions-item>
-            <n-descriptions-item label="项目级别">{{
-              levelFilters(detail.level)
-            }}</n-descriptions-item>
+            <n-descriptions-item label="项目编号">{{ detail.id_num }}</n-descriptions-item>
+            <n-descriptions-item label="批准号">{{ detail.id_num }}</n-descriptions-item>
+            <n-descriptions-item label="负责人">{{ detail.name }}</n-descriptions-item>
+            <n-descriptions-item label="联系方式">{{ detail.phone }}</n-descriptions-item>
+            <n-descriptions-item label="所属科室">{{ detail.department }}</n-descriptions-item>
+            <n-descriptions-item label="项目类别">{{ detail.type }}</n-descriptions-item>
+            <n-descriptions-item label="项目开始日期">{{ detail.start_date }}</n-descriptions-item>
+            <n-descriptions-item label="项目级别">{{ detail.level }}</n-descriptions-item>
+            <n-descriptions-item label="计划完成日期">{{ detail.end_date }}</n-descriptions-item>
+            <n-descriptions-item label="预计经费">{{ detail.expenses }}</n-descriptions-item>
             <!-- <n-descriptions-item label="申报限额">{{ detail.name }}</n-descriptions-item> -->
           </n-descriptions>
 
-          <n-descriptions
-            label-placement="left"
-            label-align="left"
-            :column="1"
-            size="large"
-            label-style="
-            width: 200px;
-            display:inline-block;
-             text-align:right;
-              padding-right:10px;            
-          "
-            class="decInfo"
-          >
-            <n-descriptions-item label="申报时间"
-              >{{ detail.start_date }} 至 {{ detail.end_date }}</n-descriptions-item
-            >
-            <n-descriptions-item label="申报说明">{{ detail.des }}</n-descriptions-item>
-          </n-descriptions>
+          <span class="from-title">项目成员</span>
+          <n-divider />
+          <n-data-table :columns="columns" :data="memberList" :pagination="pagination" />
         </div>
         <div class="side">
           <p class="title">申报材料</p>
-          <span
-            >申报材料使用要求申报材料使用要求申报材料使材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求申报材料使用要求。</span
-          >
           <div v-if="typeTabList.length">
             <n-thing
               class="thing-cell"
@@ -82,9 +67,6 @@
             </n-thing>
           </div>
           <div v-else>暂未上传申报材料</div>
-          <p style="text-align: center" v-if="route.query.status && route.query.status !== '1'">
-            <n-button type="info" ghost @click="handleEdit"> 项目申报 </n-button>
-          </p>
         </div>
       </div>
     </n-card>
@@ -92,38 +74,101 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, onMounted } from 'vue';
+  import { h, reactive, ref, onMounted, inject } from 'vue';
   import { useMessage } from 'naive-ui';
+  import { CloudDownloadOutlined } from '@vicons/antd';
   import { BaseResultEnum, ResultEnum } from '@/enums/httpEnum';
   import { useRouter, useRoute } from 'vue-router';
-  import { getApplyInfo, applyMaterial } from '@/api/project/list';
+  import { projectReviewDetail, projectReviewInfo, projectReviewStaff } from '@/api/project/list';
   import { levelFilters, typeFilters } from '@/utils/filters.ts';
+  let props = defineProps({
+    active: {
+      // 父组件v-model绑定的值
+      type: Boolean,
+    },
+  });
+  const idValue = inject('Id');
+  const emit = defineEmits(['handleBack']);
+  const handleBack = () => {
+    emit('handleBack', false);
+  };
+  const columns = [
+    {
+      title: '序号',
+      key: 'index',
+      width: 100,
+    },
+    {
+      title: '姓名',
+      key: 'user_name',
+      width: 100,
+    },
+    {
+      title: '性别',
+      key: 'sex',
+      width: 100,
+    },
+    {
+      title: '工作单位',
+      key: 'start_date',
+      width: 160,
+    },
+    {
+      title: '出生日期',
+      key: 'birthday',
+      width: 160,
+    },
+
+    {
+      title: '行政职务',
+      key: 'date',
+      width: 100,
+    },
+    {
+      title: '职称',
+      key: 'title',
+      width: 100,
+    },
+    {
+      title: '项目分工',
+      key: 'do_work',
+      width: 100,
+    },
+  ];
   const message = useMessage();
   const router = useRouter();
   const route = useRoute();
-  const typeTabList = ref([{}]);
+
   const detail = ref<any>({});
-  const handleBack = () => {
-    router.back();
+
+  const memberList = ref<any>([]);
+  const typeTabList = ref([{}]);
+  const pagination = {
+    pageSize: 5,
   };
   function handleEdit() {
-    router.replace({ path: '/project/newapply', query: { id: route.query.id } });
+    router.replace({ path: '/project/newapply', query: { id: idValue.value } });
   }
-  function switchType(e) {
-    window.location.href = '/download/' + e.file_path;
-  }
+
   onMounted(async () => {
-    const data = await getApplyInfo({ id: route.query.id });
-    detail.value = data.data.data;
-    const ret = await applyMaterial({ id: route.query.id });
+    const data = await projectReviewDetail({ id: idValue.value });
+    detail.value = data.data.data.result;
+    const ret = await projectReviewInfo({ id: idValue.value });
     // debugger;
     typeTabList.value = ret.data.data.result;
+    const list = await projectReviewStaff({ id: idValue.value });
+    // debugger;
+    memberList.value = list.data.data.result;
+
     // visits.value = data.visits;
     // saleroom.value = data.saleroom;
     // orderLarge.value = data.orderLarge;
     // volume.value = data.volume;
     // loading.value = false;
   });
+  function switchType(e) {
+    window.location.href = '/download/' + e.file_path;
+  }
 </script>
 
 <style lang="less" scoped>
@@ -152,7 +197,9 @@
     width: 20%;
     height: 600px;
     padding: 20px;
+    margin-left: 20px;
     color: #999999;
+    text-align: center;
     .title {
       text-align: center;
       font-size: 16px;

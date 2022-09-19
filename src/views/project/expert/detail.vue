@@ -6,7 +6,7 @@
           <n-breadcrumb-item @click="handleBack">
             返回上一级<template #separator> | </template></n-breadcrumb-item
           >
-          <n-breadcrumb-item> 项目申报详情</n-breadcrumb-item>
+          <n-breadcrumb-item> 项目详情</n-breadcrumb-item>
         </n-breadcrumb>
         <n-divider />
       </div>
@@ -48,8 +48,8 @@
 </template>
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import projectDetail from '../expert/projectDetail.vue';
-  import BasicSetting from '../expert/projectDetail.vue';
+  import projectDetail from './projectDetail.vue';
+  import BasicSetting from './BasicSetting.vue';
   let props = defineProps({
     active: {
       // 父组件v-model绑定的值

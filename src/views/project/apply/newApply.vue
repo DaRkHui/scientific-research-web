@@ -103,16 +103,20 @@
           </n-grid-item></n-grid
         >
 
-        <p class="from-title">项目成员 <n-button @click="addTable"> 添加成员 </n-button></p>
+        <p class="from-title">项目成员</p>
         <n-divider />
+
         <n-grid cols="1 s:1 m:1 l:1 xl:1 2xl:1" responsive="screen">
+          <n-grid-item>
+          <n-button @click="addTable"> 添加成员 </n-button></n-grid-item>
           <n-grid-item>
             <n-data-table
               :columns="columns"
               :data="newMember"
               :pagination="pagination"
               :max-height="250"
-            />
+            >
+            </n-data-table>
           </n-grid-item>
         </n-grid>
         <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="新建">
