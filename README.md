@@ -11,7 +11,7 @@
 
 
 ## 预览
-- [naive-ui-admin](https://naive-ui-admin.vercel.app)
+- [naive-ui-admin](https://v1.naiveadmin.com)
 
 账号：admin，密码：123456（随意）
 
@@ -50,7 +50,7 @@
 
 ## 文档
 
-[v1文档地址](https://naive-ui-admin-docs.vercel.app)
+[v1文档地址](https://docs.naiveadmin.com)
 
 ## 准备
 
@@ -145,6 +145,8 @@ yarn build
 `Naive Ui Admin` 使用或者其他问题，都可以在群内讨论或提问。
 
 ![abelianGroup](https://user-images.githubusercontent.com/19426584/160335146-c28dd205-4600-4d62-b2c6-6456034ab7b1.jpg)
+
+Tip: 1群已满，请申请 `Naive Admin` QQ交流群2 `741353560`
 
 ## 赞助
 #### 如果你觉得这个项目帮助到了你，你可以帮作者买一杯果汁表示鼓励 🍹。
